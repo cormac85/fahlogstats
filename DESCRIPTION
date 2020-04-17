@@ -1,13 +1,23 @@
 Package: fahlogstats
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Folding@Home Log Stats
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: Cormac Nolan
+Maintainer: Cormac Nolan <cormacnolan85@gmail.comt>
+Description: Library to help analyse the logs output by the Folding@Home client.
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Suggests: 
     testthat
+Imports: 
+    dplyr,
+    tidyr,
+    purrr,
+    ggplot2,
+    httr,
+    janitor,
+    tibble,
+    stringr,
+    magrittr
+RoxygenNote: 7.1.0
