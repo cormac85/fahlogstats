@@ -2,10 +2,27 @@
 % Please edit documentation in R/ingest.R
 \name{read_fah_logs}
 \alias{read_fah_logs}
-\title{Gather data from logs and other sources.}
+\title{Ingest Data}
 \usage{
 read_fah_logs(logs_path)
 }
+\arguments{
+\item{logs_path}{A path string to the FaH Client logs.}
+}
+\value{
+\strong{read_fah_logs:} Tibble of parsed log data.
+}
 \description{
-Gather data from logs and other sources.
+Gather data from logs and other sources.\cr\cr
+\strong{read_fah_logs:} Takes a path to a directory of FaH Client log stats and returns
+the logs parsed into a tibble (data frame). The output data frame
+is quite sparse and will include data in many different formats,
+i.e. there are lots of columns, none of them named, and lots of
+NA's. We must further split/clean the data to get tidy data.
+}
+\examples{
+# Windows 10:
+my_log_data <- read_fah_logs("~/../AppData/Roaming/FAHClient/logs/")
+summary(my_log_data)
+Read a single log.
 }

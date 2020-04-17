@@ -1,8 +1,10 @@
 Package: fahlogstats
 Type: Package
 Title: Folding@Home Log Stats
-Version: 0.1.0
+Version: 0.0.0.9000
 Author: Cormac Nolan
+Authors@R: person("Cormac", "Nolan", email = "cormac.nolan85@gmail.com",
+  role = c("aut", "cre"))
 Maintainer: Cormac Nolan <cormacnolan85@gmail.comt>
 Description: Library to help analyse the logs output by the Folding@Home client.
 License: MIT + file LICENSE
@@ -21,3 +23,4 @@ Imports:
     stringr,
     magrittr
 RoxygenNote: 7.1.0
+Roxygen: list(markdown = TRUE)
