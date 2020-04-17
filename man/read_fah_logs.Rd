@@ -2,27 +2,40 @@
 % Please edit documentation in R/ingest.R
 \name{read_fah_logs}
 \alias{read_fah_logs}
+\alias{clean_logs}
 \title{Ingest Data}
 \usage{
 read_fah_logs(logs_path)
+
+clean_logs(logs_df)
 }
 \arguments{
 \item{logs_path}{A path string to the FaH Client logs.}
+
+\item{logs_df}{The log files tibble as read in by read_fah_logs()}
 }
 \value{
 \strong{read_fah_logs:} Tibble of parsed log data.
+
+\strong{clean_logs:} Tibble of cleaned log data.
 }
 \description{
 Gather data from logs and other sources.\cr\cr
 \strong{read_fah_logs:} Takes a path to a directory of FaH Client log stats and returns
-the logs parsed into a tibble (data frame). The output data frame
-is quite sparse and will include data in many different formats,
-i.e. there are lots of columns, none of them named, and lots of
-NA's. We must further split/clean the data to get tidy data.
+the logs parsed into a tibble (data frame). \cr\cr
+\strong{clean_logs:} Takes the output of \code{read_fah_logs()} and returns a
+cleaner tibble with dates and time types created.
+The output data frame is quite sparse and will
+include data in many different formats,i.e. there are lots of
+columns, none of them named, and lots of NA's. We must further
+split/clean the data to get tidy data.
 }
 \examples{
 # Windows 10:
 my_log_data <- read_fah_logs("~/../AppData/Roaming/FAHClient/logs/")
 summary(my_log_data)
-Read a single log.
+# Windows 10:
+my_log_data <- read_fah_logs("~/../AppData/Roaming/FAHClient/logs/")
+my_clean_log_data <- clean_logs(my_log_data)
+summary(my_clean_log_data)
 }

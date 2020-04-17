@@ -2,16 +2,16 @@
 #'
 #' Gather data from logs and other sources.\cr\cr
 #' **read_fah_logs:** Takes a path to a directory of FaH Client log stats and returns
-#' the logs parsed into a tibble (data frame). The output data frame
-#' is quite sparse and will include data in many different formats,
-#' i.e. there are lots of columns, none of them named, and lots of
-#' NA's. We must further split/clean the data to get tidy data.
+#' the logs parsed into a tibble (data frame). \cr\cr
+#' **clean_logs:** Takes the output of `read_fah_logs()` and returns a
+#' cleaner tibble with dates and time types created.
+#' The output data frame is quite sparse and will
+#' include data in many different formats,i.e. there are lots of
+#' columns, none of them named, and lots of NA's. We must further
+#' split/clean the data to get tidy data.
 #' @name read_fah_logs
 NULL
 
-
-
-#'
 #' @rdname read_fah_logs
 #' @param logs_path A path string to the FaH Client logs.
 #'
@@ -23,15 +23,15 @@ NULL
 #' my_log_data <- read_fah_logs("~/../AppData/Roaming/FAHClient/logs/")
 #' summary(my_log_data)
 
-
-#' Read a single log.
 read_fah_logs <- function(logs_path) {
   logs <-
     tibble::tibble(log_file_name = list.files(pattern = "*.txt", path = logs_path)) %>%
     dplyr::mutate(log_df = map(log_file_name, read_log, logs_path))
 }
 
+
 read_log <- function(log_file_name, path) {
+  # Read a single log.
   file_path <- paste0(path, log_file_name)
 
   log_df <- tibble::tibble(message = scan(file_path,
@@ -42,6 +42,18 @@ read_log <- function(log_file_name, path) {
 }
 
 
+#' @rdname read_fah_logs
+#' @param logs_df The log files tibble as read in by read_fah_logs()
+#'
+#' @return **clean_logs:** Tibble of cleaned log data.
+#'
+#' @export
+#' @examples
+#' # Windows 10:
+#' my_log_data <- read_fah_logs("~/../AppData/Roaming/FAHClient/logs/")
+#' my_clean_log_data <- clean_logs(my_log_data)
+#' summary(my_clean_log_data)
+
 clean_logs <- function(logs_df) {
   parsed_log <-
     logs_df %>%
@@ -50,7 +62,9 @@ clean_logs <- function(logs_df) {
            log_date = as.Date(log_date, format = "%Y%m%d")) %>%
     unnest(log_df)
 
-
+  # TODO: you can't rely on the log date for the date information,
+  # if the log rolls over to a new day you must increment the date
+  # or read it from somewhere in the log data itself.
   parsed_log <-
     parsed_log %>%
     mutate(log_time = str_sub(message, 1, 8),
@@ -65,7 +79,11 @@ clean_logs <- function(logs_df) {
 }
 
 
-# IP Address Lookup
+#' Get IP Data From IP API
+#'
+#' API: http://ip-api.com/json/
+#'
+#' @export
 
 get_from_ip_api <- function(ip_addr) {
   api_url <- "http://ip-api.com/json/"
