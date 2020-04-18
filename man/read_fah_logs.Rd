@@ -21,8 +21,8 @@ clean_logs(logs_df)
 }
 \description{
 Gather data from logs and other sources.\cr\cr
-\strong{read_fah_logs:} Takes a path to a directory of FaH Client log stats and returns
-the logs parsed into a tibble (data frame). \cr\cr
+\strong{read_fah_logs:} Takes a path to a directory of FaH Client log
+stats and returns the logs parsed into a tibble (data frame). \cr\cr
 \strong{clean_logs:} Takes the output of \code{read_fah_logs()} and returns a
 cleaner tibble with dates and time types created.
 The output data frame is quite sparse and will
