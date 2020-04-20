@@ -2,22 +2,15 @@
 % Please edit documentation in R/ingest.R
 \name{read_fah_logs}
 \alias{read_fah_logs}
-\alias{clean_logs}
 \title{Ingest Data}
 \usage{
 read_fah_logs(logs_path)
-
-clean_logs(logs_df)
 }
 \arguments{
 \item{logs_path}{A path string to the FaH Client logs.}
-
-\item{logs_df}{The log files tibble as read in by read_fah_logs()}
 }
 \value{
 \strong{read_fah_logs:} Tibble of parsed log data.
-
-\strong{clean_logs:} Tibble of cleaned log data.
 }
 \description{
 Gather data from logs and other sources.\cr\cr
@@ -34,8 +27,4 @@ split/clean the data to get tidy data.
 # Windows 10:
 my_log_data <- read_fah_logs("~/../AppData/Roaming/FAHClient/logs/")
 summary(my_log_data)
-# Windows 10:
-my_log_data <- read_fah_logs("~/../AppData/Roaming/FAHClient/logs/")
-my_clean_log_data <- clean_logs(my_log_data)
-summary(my_clean_log_data)
 }

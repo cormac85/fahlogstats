@@ -1,5 +1,60 @@
 # Process & Enrich Data
 
+#' Clean FAH Log Data
+#'
+#' Cleans the output of `read_fah_logs()`
+#'
+#' @param logs_df The log files tibble as read in by read_fah_logs()
+#'
+#' @return **clean_logs:** Tibble of cleaned log data.
+#'
+#' @export
+#' @examples
+#' # Windows 10:
+#' my_log_data <- read_fah_logs("~/../AppData/Roaming/FAHClient/logs/")
+#' my_clean_log_data <- clean_logs(my_log_data)
+#' summary(my_clean_log_data)
+
+clean_logs <- function(logs_df) {
+  parsed_log <-
+    logs_df %>%
+    dplyr::mutate(log_date =
+                    purrr::map_chr(log_file_name,
+                                   function(x) stringr::str_extract(x, "\\d+")),
+                  log_date = as.Date(log_date, format = "%Y%m%d")) %>%
+    tidyr::unnest(log_df)
+
+  # TODO: you can't rely on the log date for the date information,
+  # if the log rolls over to a new day you must increment the date
+  # or read it from somewhere in the log data itself.
+  parsed_log <-
+    parsed_log %>%
+    dplyr::mutate(log_row_index = 1:nrow(parsed_log)) %>%
+    dplyr::mutate(log_time = stringr::str_sub(message, 1, 8),
+                  message = stringr::str_sub(message, 10, 10000),
+                  message = stringr::str_trim(message),
+                  log_timestamp = lubridate::ymd_hms(paste(log_date, log_time)))
+
+  parsed_log <-
+    parsed_log %>%
+    dplyr::arrange(log_row_index) %>%
+    dplyr::group_by(log_file_name) %>%
+    dplyr::mutate(lagged_time_diff = log_timestamp - dplyr::lag(log_timestamp),
+                  is_date_rollover = ifelse(lagged_time_diff >=0, FALSE, TRUE))
+  parsed_log <-
+    parsed_log %>%
+    dplyr::mutate(is_date_rollover = cumsum( dplyr::coalesce(is_date_rollover, FALSE)),
+                  log_timestamp = log_timestamp + lubridate::days(is_date_rollover),
+                  log_date = log_date + lubridate::days(is_date_rollover))
+
+
+  tidyr::separate(parsed_log,
+                  col = message,
+                  into = as.character(1:13),
+                  sep = ":")
+}
+
+
 #' Get Processing Time Summary
 #'
 #' @param parsed_log A tibble of FAH Client logs that are parsed
@@ -84,6 +139,14 @@ get_debug_data <- function(parsed_log){
     dplyr::rename(debug_level = `1`,
                   work_unit = `2`,
                   folding_slot = `3`)
+}
+
+add_cumulative_sum <- function(log_df, sum_column, date_column, ...) {
+  # adds a cumulative sum column based a given column and group keys
+  log_df %>%
+    dplyr::arrange(folding_slot, ..., {{date_column}}) %>%
+    dplyr::group_by(folding_slot, ...) %>%
+    dplyr::mutate("cumulative_{{ sum_column }}" := cumsum({{ sum_column }}))
 }
 
 #' Get Total Log Duration

@@ -1,6 +1,22 @@
-
-plot_credits <- function(credits_df) {
-  credits_df %>%
+#' Plot Credits by Folding Slot
+#'
+#' Given the output of `get_credits()`, this will create a stacked bar chart of
+#' credits awarded by folding slot. Set `all_slots = TRUE` if you want to see
+#' total credits of all folding slots.
+#'
+#' @param parsed_log A tibble of FAH Client logs that are parsed
+#' (`read_fah_logs()`) and cleaned (`clean_logs()`).
+#'
+#' @return A plot of credits acquired per day.
+#'
+#' @export
+#' @examples
+#' read_fah_logs("~/../AppData/Roaming/FAHClient/logs/") %>%
+#'   clean_logs() %>%
+#'   get_credits() %>%
+#'   plt_credits()
+plot_credits <- function(credits_df, all_slots = FALSE) {
+  credits_plot <- credits_df %>%
     ggplot() +
     geom_col(aes(log_date, credits_attributed, fill = as.character(log_time)),
              position = "stack") +
@@ -16,7 +32,15 @@ plot_credits <- function(credits_df) {
                            max(credits_df$log_date)),
          x = "Date", y = "Credits") +
     scale_y_continuous(labels = scales::comma_format())
+
+  if(all_slots)
+    credits_plot <- credits_plot
+  else if(!all_slots)
+    credits_plot <- credits_plot + facet_wrap(~folding_slot, ncol=1)
+
+  credits_plot
 }
+
 
 
 # cumulative_plot_by_slot <-
