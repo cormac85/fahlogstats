@@ -23,7 +23,7 @@ plot_credits <- function(credits_df, all_slots = FALSE) {
     ggplot2::geom_col(ggplot2::aes(log_date,
                                    credits_attributed,
                                    fill = folding_slot),
-                      position = "stack", colour = fah_web_palette[4]) +
+                      position = "stack", colour = fah_web_palette[5]) +
 
     ggplot2::theme_minimal() +
     ggplot2::scale_x_date(date_breaks = "1 day", date_labels = "%a %F") +

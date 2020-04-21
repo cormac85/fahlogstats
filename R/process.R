@@ -49,7 +49,8 @@ clean_logs <- function(logs_df) {
   tidyr::separate(parsed_log,
                   col = message,
                   into = as.character(1:13),
-                  sep = ":")
+                  sep = ":",
+                  fill = "right")
 }
 
 
