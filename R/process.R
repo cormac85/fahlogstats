@@ -24,9 +24,6 @@ clean_logs <- function(logs_df) {
                   log_date = as.Date(log_date, format = "%Y%m%d")) %>%
     tidyr::unnest(log_df)
 
-  # TODO: you can't rely on the log date for the date information,
-  # if the log rolls over to a new day you must increment the date
-  # or read it from somewhere in the log data itself.
   parsed_log <-
     parsed_log %>%
     dplyr::mutate(log_row_index = 1:nrow(parsed_log)) %>%
@@ -45,7 +42,8 @@ clean_logs <- function(logs_df) {
     parsed_log %>%
     dplyr::mutate(is_date_rollover = cumsum( dplyr::coalesce(is_date_rollover, FALSE)),
                   log_timestamp = log_timestamp + lubridate::days(is_date_rollover),
-                  log_date = log_date + lubridate::days(is_date_rollover))
+                  log_date = log_date + lubridate::days(is_date_rollover)) %>%
+    dplyr::ungroup()
 
 
   tidyr::separate(parsed_log,
