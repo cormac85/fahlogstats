@@ -22,18 +22,10 @@ test_that("adding cumulative log column sums correctly", {
 
 test_that(
   "import & cleaning gives right date when the date rolls over at midnight", {
-  log_file_path <- "./testdata/"
+  log_file_path <- "./testdata/test_process/"
   actual_in <- tibble::tibble(log_file_name = "log-20200409-124015.txt")
 
-  actual_out <-
-    suppressMessages(
-      suppressWarnings(
-        actual_in %>%
-          dplyr::mutate(log_df = purrr::map(log_file_name,
-                                            read_log,
-                                            log_file_path)) %>%
-          fahlogstats::clean_logs()
-      ))
+  actual_out <- read_fah_logs(actual_in, log_file_path) %>% clean_logs()
 
   actual <-
     actual_out$log_timestamp %>%
@@ -47,3 +39,20 @@ test_that(
                  lubridate::ymd("2020-04-11"))
   )
 })
+
+test_that(
+  "cleaning parses a log into the correct columns for a single work unit row", {
+    actual_input <-
+     tibble::tibble(log_file_name = "log-20200329-131612.txt",
+                    message = "17:52:59:WU01:FS00:0xa7:Completed 92500 out of 125000 steps (74%)",
+                    log_date = structure(18350, class = "Date"))
+
+    actual_output <- clean_logs(actual_input)
+    expect_equal(actual_output$`1`, "WU01")
+    expect_equal(actual_output$`2`, "FS00")
+    expect_equal(actual_output$`3`, "0xa7")
+    expect_equal(actual_output$log_date, as.Date("2020-03-29"))
+    expect_equal(actual_output$log_time, "17:52:59")
+    expect_equal(actual_output$log_timestamp, lubridate::ymd_hms("2020-03-29 17:52:59"))
+    expect_equal(nrow(actual_output), 1)
+  })

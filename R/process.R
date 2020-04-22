@@ -18,15 +18,7 @@
 clean_logs <- function(logs_df) {
   parsed_log <-
     logs_df %>%
-    dplyr::mutate(log_date =
-                    purrr::map_chr(log_file_name,
-                                   function(x) stringr::str_extract(x, "\\d+")),
-                  log_date = as.Date(log_date, format = "%Y%m%d")) %>%
-    tidyr::unnest(log_df)
-
-  parsed_log <-
-    parsed_log %>%
-    dplyr::mutate(log_row_index = 1:nrow(parsed_log)) %>%
+    dplyr::mutate(log_row_index = 1:nrow(logs_df)) %>%
     dplyr::mutate(log_time = stringr::str_sub(message, 1, 8),
                   message = stringr::str_sub(message, 10, 10000),
                   message = stringr::str_trim(message),
@@ -46,11 +38,12 @@ clean_logs <- function(logs_df) {
     dplyr::ungroup()
 
 
-  tidyr::separate(parsed_log,
-                  col = message,
-                  into = as.character(1:13),
-                  sep = ":",
-                  fill = "right")
+  suppressWarnings(tidyr::separate(parsed_log,
+                                   col = message,
+                                   into = as.character(1:13),
+                                   sep = ":",
+                                   fill = "right")
+  )
 }
 
 

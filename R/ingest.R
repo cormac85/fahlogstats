@@ -23,13 +23,24 @@ NULL
 #' my_log_data <- read_fah_logs("~/../AppData/Roaming/FAHClient/logs/")
 #' summary(my_log_data)
 
-read_fah_logs <- function(logs_path) {
+read_fah_logs <- function(logs_path_df, logs_path) {
   # TODO: Check if the path is a folder or a file and return data accordingly.
-  tibble::tibble(log_file_name = list.files(pattern = "*.txt",
-                                            path = logs_path)) %>%
-    dplyr::mutate(log_df = purrr::map(log_file_name, read_log, logs_path))
+  logs_path_df %>%
+    dplyr::mutate(log_df = purrr::map(log_file_name, read_log, logs_path)) %>%
+    dplyr::mutate(log_date =
+                    purrr::map_chr(log_file_name,
+                                   function(x) stringr::str_extract(x, "\\d+")),
+                  log_date = as.Date(log_date, format = "%Y%m%d")) %>%
+    tidyr::unnest(log_df)
 }
 
+#' Read FAH Logs from a Directory
+#' @export
+read_fah_logs_dir <- function(logs_path){
+  tibble::tibble(log_file_name = list.files(pattern = "*.txt",
+                                            path = logs_path)) %>%
+    read_fah_logs(logs_path)
+}
 
 read_log <- function(log_file_name, path) {
   # Read a single log.
