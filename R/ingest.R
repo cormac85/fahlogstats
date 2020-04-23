@@ -24,7 +24,6 @@ NULL
 #' summary(my_log_data)
 
 read_fah_logs <- function(logs_path_df, logs_path) {
-  # TODO: Check if the path is a folder or a file and return data accordingly.
   logs_path_df %>%
     dplyr::mutate(log_df = purrr::map(log_file_name, read_log, logs_path)) %>%
     dplyr::mutate(log_date =
@@ -36,10 +35,27 @@ read_fah_logs <- function(logs_path_df, logs_path) {
 
 #' Read FAH Logs from a Directory
 #' @export
-read_fah_logs_dir <- function(logs_path){
-  tibble::tibble(log_file_name = list.files(pattern = "*.txt",
+read_fah_logs_dir <- function(logs_path, log_name_pattern = "*.txt"){
+  tibble::tibble(log_file_name = list.files(pattern = log_name_pattern,
                                             path = logs_path)) %>%
     read_fah_logs(logs_path)
+}
+
+#' Read live log
+#' @export
+read_live_log <- function(fah_client_path) {
+  raw_log_df <- read_fah_logs_dir(fah_client_path, "log.txt")
+
+  log_start_date <-
+    log_df %>%
+    dplyr::filter(stringr::str_detect(message, " Log Started")) %>%
+    (function(x) x$message[1]) %>%
+    stringr::str_extract("[0-9]{4}-[0-9]{2}-[0-9]{2}") %>%
+    lubridate::ymd()
+
+  raw_log_df$log_date <- log_start_date
+
+  raw_log_df
 }
 
 read_log <- function(log_file_name, path) {

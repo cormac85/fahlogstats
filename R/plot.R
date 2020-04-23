@@ -31,7 +31,7 @@ plot_credits <- function(credits_df, all_slots = FALSE) {
                    axis.text.x = ggplot2::element_text(angle = 30, hjust = 1),
                    panel.grid.major.x = ggplot2::element_blank(),
                    panel.grid.minor.x = ggplot2::element_blank(),
-                   strip.text = element_text(face = "bold", size = ggplot2::rel(1.2))) +
+                   strip.text = ggplot2::element_text(face = "bold", size = ggplot2::rel(1.2))) +
     ggplot2::labs(title = paste0("Credits Acquired Per Day"),
                   subtitle = paste0(min(credits_df$log_date), " - ",
                                     max(credits_df$log_date)),
