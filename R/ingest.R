@@ -47,7 +47,7 @@ read_live_log <- function(fah_client_path) {
   raw_log_df <- read_fah_logs_dir(fah_client_path, "log.txt")
 
   log_start_date <-
-    log_df %>%
+    raw_log_df %>%
     dplyr::filter(stringr::str_detect(message, " Log Started")) %>%
     (function(x) x$message[1]) %>%
     stringr::str_extract("[0-9]{4}-[0-9]{2}-[0-9]{2}") %>%

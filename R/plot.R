@@ -133,40 +133,46 @@ plot_cumulative_network_usage <- function(network_usage_daily_summary) {
     network_usage_daily_summary %>%
     dplyr::group_by(folding_slot, network_direction, log_date) %>%
     dplyr::summarise(total_usage_mib = sum(usage_mib)) %>%
-    arrange(folding_slot, network_direction, log_date) %>%
-    group_by(folding_slot, network_direction) %>%
-    mutate(cumulative_usage_mib = cumsum(total_usage_mib))
+    dplyr::arrange(folding_slot, network_direction, log_date) %>%
+    dplyr::group_by(folding_slot, network_direction) %>%
+    dplyr::mutate(cumulative_usage_mib = cumsum(total_usage_mib))
 
   cumulative_usage <-
     network_usage_daily_summary %>%
-    arrange(log_date) %>%
-    group_by(log_date) %>%
-    summarise(total_usage_mib = sum(usage_mib)) %>%
-    mutate(cumulative_usage_mib = cumsum(total_usage_mib))
+    dplyr::arrange(log_date) %>%
+    dplyr::group_by(log_date) %>%
+    dplyr::summarise(total_usage_mib = sum(usage_mib)) %>%
+    dplyr::mutate(cumulative_usage_mib = cumsum(total_usage_mib))
 
   total_usage_gib = sum(cumulative_usage$total_usage_mib) / 1024
 
   cumulative_plot <-
     cumulative_usage %>%
-    ggplot(aes(log_date, cumulative_usage_mib / 1024)) +
-    geom_line(colour = fah_web_palette[2]) +
-    theme_minimal() +
-    labs(title = "Total Cumulative Network Usage",
-         subtitle = "Upload + Download",
-         x = "Date", y = "Cumulative Usage (GiB)") +
-    ylim(c(0, total_usage_gib))
+    ggplot2::ggplot(ggplot2::aes(log_date, cumulative_usage_mib / 1024,
+                                 label = round(cumulative_usage_mib / 1024, 2))) +
+    ggplot2::geom_line(colour = fah_web_palette[2]) +
+    ggplot2::geom_point(colour = fah_web_palette[2]) +
+    ggplot2::geom_text(hjust = -0.2, colour = fah_web_palette[2]) +
+    ggplot2::theme_minimal() +
+    ggplot2::labs(title = "Total Cumulative Network Usage",
+                  subtitle = "Upload + Download",
+                  x = "Date", y = "Cumulative Usage (GiB)") +
+    ggplot2::ylim(c(0, total_usage_gib))
 
   cumulative_plot_by_slot <-
     cumulative_usage_by_slot %>%
-    ggplot(aes(log_date, cumulative_usage_mib / 1024, fill = network_direction)) +
-    geom_col() +
-    theme_minimal() +
-    theme(legend.position = "top") +
-    scale_fill_manual(values = fah_web_palette) +
-    facet_wrap(~folding_slot, ncol = 1) +
-    labs(title = "Cumulative Network Usage by Folding Slot",
+    ggplot2::ggplot(ggplot2::aes(log_date, cumulative_usage_mib / 1024, fill = network_direction)) +
+    ggplot2::geom_col() +
+    ggplot2::theme_minimal() +
+    ggplot2::theme(legend.position = "top",
+                   axis.text.x = ggplot2::element_blank(),
+                   axis.ticks.x = ggplot2::element_blank(),
+                   axis.title.x = ggplot2::element_blank()) +
+    ggplot2::scale_fill_manual(values = fah_web_palette) +
+    ggplot2::facet_wrap(~folding_slot, ncol = 1) +
+    ggplot2::labs(title = "Cumulative Network Usage by Folding Slot",
          x = "Date", y = "Cumulative Usage (GiB)") +
-    ylim(c(0, total_usage_gib))
+    ggplot2::ylim(c(0, total_usage_gib))
 
   gridExtra::grid.arrange(cumulative_plot_by_slot,
                           cumulative_plot,

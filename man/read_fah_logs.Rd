@@ -4,7 +4,7 @@
 \alias{read_fah_logs}
 \title{Ingest Data}
 \usage{
-read_fah_logs(logs_path)
+read_fah_logs(logs_path_df, logs_path)
 }
 \arguments{
 \item{logs_path}{A path string to the FaH Client logs.}
