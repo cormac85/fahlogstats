@@ -17,7 +17,7 @@ file.copy(paste0("~/../AppData/Roaming/FAHClient/logs/",
                  list.files(pattern = "*.txt", path = "~/../AppData/Roaming/FAHClient/logs/")))
 
 logs_df <-
-  fahlogstats:::read_fah_logs_dir(logs_path) %>%
+  fahlogstats::read_fah_logs_dir(logs_path) %>%
   clean_logs()
 
 # summary(logs_df)
@@ -32,8 +32,3 @@ logs_df %>%
   get_network_usage() %>%
   plot_cumulative_network_usage()
 
-read_live_log("~/../AppData/Roaming/FAHClient/") %>%
-  clean_logs() %>%
-  get_work_unit_data() %>%
-  get_network_usage() %>%
-  plot_cumulative_network_usage()

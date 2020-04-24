@@ -152,7 +152,6 @@ plot_cumulative_network_usage <- function(network_usage_daily_summary) {
                                  label = round(cumulative_usage_mib / 1024, 2))) +
     ggplot2::geom_line(colour = fah_web_palette[2]) +
     ggplot2::geom_point(colour = fah_web_palette[2]) +
-    ggplot2::geom_text(hjust = -0.2, colour = fah_web_palette[2]) +
     ggplot2::theme_minimal() +
     ggplot2::labs(title = "Total Cumulative Network Usage",
                   subtitle = "Upload + Download",
