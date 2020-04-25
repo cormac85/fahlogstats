@@ -40,20 +40,9 @@ plot_credits <- function(credits_df, all_slots = FALSE) {
     ggplot2::scale_y_continuous(labels = scales::comma_format()) +
     ggplot2::scale_fill_manual(values = fah_web_palette)
 
+  credits_per_slot <- get_credit_summary(credits_df, all_slots = all_slots)
+
   if(all_slots){
-    credits_per_day <-
-      credits_df %>%
-      dplyr::group_by(log_date) %>%
-      dplyr::summarise(sum_daily = sum(credits_attributed))
-
-    credits_per_slot <-
-      credits_df %>%
-      dplyr::ungroup() %>%
-      dplyr::summarise(total_credits_attributed = sum(credits_attributed),
-                       mean_credits_attributed = mean(credits_attributed)) %>%
-      dplyr::mutate(x = min(credits_df$log_date),
-                    y = max(credits_per_day$sum_daily))
-
     credits_plot <-
       credits_plot +
       ggplot2::geom_label(data = credits_per_slot,
@@ -63,32 +52,29 @@ plot_credits <- function(credits_df, all_slots = FALSE) {
                                          "Total Credits: ",
                                          scales::comma(total_credits_attributed)
                                        )),
-                          fill = fah_web_palette[5], colour = "white",
+                          fill = fah_web_palette[2], colour = "white",
                           fontface = "bold", hjust = 0.1) +
       ggplot2::geom_label(data = credits_per_slot,
                           inherit.aes = FALSE,
                           ggplot2::aes(x = x, y = y - (0.2 * y),
                                        label = paste(
-                                         "Average Daily Credits: ",
+                                         "Credits per Work Unit: ",
+                                         scales::comma(credits_per_wu)
+                                       )),
+                          fill = fah_web_palette[2], colour = "white",
+                          fontface = "bold", hjust = 0.1) +
+      ggplot2::geom_label(data = credits_per_slot,
+                          inherit.aes = FALSE,
+                          ggplot2::aes(x = x, y = y - (0.3 * y),
+                                       label = paste(
+                                         "Credits Per Day: ",
                                          scales::comma(mean_credits_attributed)
                                        )),
-                          fill = fah_web_palette[5], colour = "white",
+                          fill = fah_web_palette[2],
+                          colour = "white",
                           fontface = "bold", hjust = 0.1)
   }
   else if(!all_slots){
-    credits_per_day <-
-      credits_df %>%
-      dplyr::group_by(folding_slot, log_date) %>%
-      dplyr::summarise(sum_daily = sum(credits_attributed))
-
-    credits_per_slot <-
-      credits_df %>%
-      dplyr::group_by(folding_slot) %>%
-      dplyr::summarise(total_credits_attributed = sum(credits_attributed),
-                       mean_credits_attributed = mean(credits_attributed)) %>%
-      dplyr::mutate(x = min(credits_df$log_date),
-                    y = max(credits_per_day$sum_daily))
-
     credits_plot <-
       credits_plot +
       ggplot2::facet_wrap(~folding_slot, ncol=1, ) +
@@ -106,8 +92,18 @@ plot_credits <- function(credits_df, all_slots = FALSE) {
                           inherit.aes = FALSE,
                           ggplot2::aes(x = x, y = y - (0.2 * y),
                                        label = paste(
-                                         "Average Daily Credits: ",
+                                         "Credits Per Day: ",
                                          scales::comma(mean_credits_attributed)
+                                       ),
+                                       fill = folding_slot),
+                          colour = "white",
+                          fontface = "bold", hjust = 0) +
+      ggplot2::geom_label(data = credits_per_slot,
+                          inherit.aes = FALSE,
+                          ggplot2::aes(x = x, y = y - (0.35 * y),
+                                       label = paste(
+                                         "Credits Per Work Unit: ",
+                                         scales::comma(credits_per_wu)
                                        ),
                                        fill = folding_slot),
                           colour = "white",

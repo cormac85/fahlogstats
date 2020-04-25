@@ -32,3 +32,14 @@ logs_df %>%
   get_network_usage() %>%
   plot_cumulative_network_usage()
 
+# live logs
+
+live_logs_df <-
+  read_live_log("~/../AppData/Roaming/FAHClient/") %>%
+  clean_logs()
+
+
+live_logs_df %>%
+  get_work_unit_data() %>%
+  get_credits() %>%
+  plot_credits(all_slots = TRUE)

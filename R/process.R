@@ -186,6 +186,36 @@ get_credits <- function(work_units_df) {
 }
 
 
+#' Credit Summary
+#' @export
+get_credit_summary <- function(credits_df, all_slots = FALSE) {
+  if(all_slots) {
+    credits_df <- dplyr:: mutate(credits_df, folding_slot = "all")
+  }
+
+  credits_per_day <-
+    credits_df %>%
+    dplyr::group_by(folding_slot, log_date) %>%
+    dplyr::summarise(sum_daily = sum(credits_attributed))
+
+  credits_per_work_unit <-
+    credits_df %>%
+    dplyr::group_by(folding_slot) %>%
+    dplyr::summarise(credits_per_wu = mean(credits_attributed))
+
+  credits_per_slot <-
+    credits_per_day %>%
+    dplyr::group_by(folding_slot) %>%
+    dplyr::summarise(total_credits_attributed = sum(sum_daily),
+                     mean_credits_attributed = mean(sum_daily)) %>%
+    dplyr::mutate(x = min(credits_df$log_date),
+                  y = max(credits_per_day$sum_daily)) %>%
+    dplyr::left_join(credits_per_work_unit, by = "folding_slot")
+
+  credits_per_slot
+
+}
+
 #' Get Network Usage
 #'
 #' @export
