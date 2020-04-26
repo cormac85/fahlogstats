@@ -22,30 +22,30 @@ test_that("adding cumulative log column sums correctly", {
 
 test_that(
   "import & cleaning gives right date when the date rolls over at midnight", {
-  log_file_path <- "./testdata/test_process/"
-  actual_in <- tibble::tibble(log_file_name = "log-20200409-124015.txt")
+    log_file_path <- "./testdata/test_process/"
+    actual_in <- tibble::tibble(log_file_name = "log-20200409-124015.txt")
 
-  actual_out <- read_fah_logs(actual_in, log_file_path) %>% clean_logs()
+    actual_out <- read_fah_logs(actual_in, log_file_path) %>% clean_logs()
 
-  actual <-
-    actual_out$log_timestamp %>%
-    as.Date() %>%
-    unique() %>%
-    sort()
+    actual <-
+      actual_out$log_timestamp %>%
+      as.Date() %>%
+      unique() %>%
+      sort()
 
-  expect_equal(actual,
-               c(lubridate::ymd("2020-04-09"),
-                 lubridate::ymd("2020-04-10"),
-                 lubridate::ymd("2020-04-11"))
-  )
-})
+    expect_equal(actual,
+                 c(lubridate::ymd("2020-04-09"),
+                   lubridate::ymd("2020-04-10"),
+                   lubridate::ymd("2020-04-11"))
+    )
+  })
 
 test_that(
   "cleaning parses a log into the correct columns for a single work unit row", {
     actual_input <-
-     tibble::tibble(log_file_name = "log-20200329-131612.txt",
-                    message = "17:52:59:WU01:FS00:0xa7:Completed 92500 out of 125000 steps (74%)",
-                    log_date = structure(18350, class = "Date"))
+      tibble::tibble(log_file_name = "log-20200329-131612.txt",
+                     message = "17:52:59:WU01:FS00:0xa7:Completed 92500 out of 125000 steps (74%)",
+                     log_date = structure(18350, class = "Date"))
 
     actual_output <- clean_logs(actual_input)
     expect_equal(actual_output$`1`, "WU01")
@@ -56,3 +56,74 @@ test_that(
     expect_equal(actual_output$log_timestamp, lubridate::ymd_hms("2020-03-29 17:52:59"))
     expect_equal(nrow(actual_output), 1)
   })
+
+test_that("daily network usage includes 0's for days when no usage ", {
+  actual_input <-
+    tibble::tibble(
+      log_file_name = c("log.txt", "log.txt", "log.txt", "log.txt"),
+      work_unit = c("WU00","WU00", "WU00", "WU00"),
+      folding_slot = c("FS00", "FS00", "FS00", "FS00"),
+      `3` = c("Downloading 1.0MiB",
+              "Downloading 1.0MiB",
+              "Downloading 1.0MiB",
+              "Downloading 1.0MiB"),
+      log_date = as.Date(c("2020-04-01",
+                           "2020-04-01",
+                           "2020-04-03",
+                           "2020-04-03")),
+      log_timestamp = lubridate::ymd_hms(c("2020-04-01 08:54:03",
+                                           "2020-04-01 09:54:03",
+                                           "2020-04-03 08:54:03",
+                                           "2020-04-03 09:54:03")),
+      log_time = c("08:54:03",
+                   "09:54:03",
+                   "08:54:03",
+                   "09:54:03")
+    )
+
+  actual_output <-
+    get_network_usage(actual_input) %>%
+    calculate_daily_network_usage()
+
+  testthat::expect_equal(
+    actual_output$total_usage_mib,
+    c(2, 0, 2)
+  )
+
+  testthat::expect_equal(
+    unique(actual_output$log_date),
+    as.Date(c("2020-04-01",
+              "2020-04-02",
+              "2020-04-03"))
+  )
+})
+
+test_that("network usage parsing gets correct units", {
+  actual_input <-
+    tibble::tibble(
+      log_file_name = c("log.txt", "log.txt", "log.txt"),
+      work_unit = c("WU00","WU00", "WU00"),
+      folding_slot = c("FS00", "FS00", "FS00"),
+      `3` = c("Downloading 1.0MiB",
+              "Downloading 1.0KiB",
+              "Downloading 1.0GiB"),
+      log_date = as.Date(c("2020-04-01",
+                           "2020-04-02",
+                           "2020-04-03")),
+      log_timestamp = lubridate::ymd_hms(c("2020-04-01 08:54:03",
+                                           "2020-04-02 09:54:03",
+                                           "2020-04-03 08:54:03")),
+      log_time = c("08:54:03",
+                   "09:54:03",
+                   "08:54:03")
+    )
+
+  actual_output <-
+    get_network_usage(actual_input) %>%
+    calculate_daily_network_usage()
+
+  testthat::expect_equal(
+    actual_output$total_usage_mib,
+    c(1, 0.001, 1000)
+  )
+})

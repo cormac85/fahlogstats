@@ -25,11 +25,12 @@ logs_df <-
 logs_df %>%
   get_work_unit_data() %>%
   get_credits() %>%
-  plot_credits()
+  plot_credits(all_slots = TRUE)
 
 logs_df %>%
   get_work_unit_data() %>%
   get_network_usage() %>%
+  calculate_daily_network_usage() %>%
   plot_cumulative_network_usage()
 
 # live logs
@@ -43,3 +44,15 @@ live_logs_df %>%
   get_work_unit_data() %>%
   get_credits() %>%
   plot_credits(all_slots = TRUE)
+
+
+# Ip addresses
+live_logs_df %>%
+  get_work_unit_data() %>%
+  get_connections_data() %>%
+  dplyr::pull(ip_address) %>%
+  sample(20) %>%
+  purrr::map_df(get_from_ip_api) %>%
+  group_by(org) %>%
+  tally() %>%
+  arrange(n)

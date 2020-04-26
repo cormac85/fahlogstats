@@ -220,26 +220,55 @@ get_credit_summary <- function(credits_df, all_slots = FALSE) {
 #'
 #' @export
 get_network_usage <- function(work_units_df) {
-  work_units_df %>%
+
+  upload_df <-
+    work_units_df %>%
     dplyr::filter(stringr::str_detect(`3`, "Downloading")) %>%
-    dplyr::rename(usage_mib = `3`) %>%
+    dplyr::rename(usage_string = `3`) %>%
     dplyr::select(log_file_name, folding_slot, work_unit,
                   log_timestamp, log_date, log_time,
-                  usage_mib) %>%
-    dplyr::mutate(usage_mib = stringr::str_extract(usage_mib, "(\\d+).(\\d+)"),
-                  network_direction = "download") %>%
-    dplyr::union_all(
+                  usage_string) %>%
+    dplyr::mutate(usage_value = stringr::str_extract(usage_string,
+                                                     "(\\d+).(\\d+)"),
+                  usage_unit = stringr::str_extract(usage_string, "(\\d+).(\\d+)\\w"),
+                  usage_unit = stringr::str_trunc(usage_unit,
+                                                  width = 1,
+                                                  side = "left",
+                                                  ellipsis = ""),
+                  network_direction = "download")
+
+  download_df <-
       work_units_df %>%
         dplyr::filter(stringr::str_detect(`3`, "Uploading")) %>%
-        dplyr::rename(usage_mib = `3`) %>%
+        dplyr::rename(usage_string = `3`) %>%
         dplyr::select(log_file_name, folding_slot, work_unit,
                       log_timestamp, log_date, log_time,
-                      usage_mib) %>%
-        dplyr::mutate(usage_mib = stringr::str_extract(usage_mib,
+                      usage_string) %>%
+        dplyr::mutate(usage_value = stringr::str_extract(usage_string,
                                                        "(\\d+).(\\d+)"),
+                      usage_unit = stringr::str_extract(usage_string,
+                                                        "(\\d+).(\\d+)\\w"),
+                      usage_unit = stringr::str_trunc(usage_unit,
+                                                      width = 1,
+                                                      side = "left",
+                                                      ellipsis = ""),
                       network_direction = "upload")
-    ) %>%
-    dplyr::mutate(usage_mib = as.numeric(usage_mib))
+
+
+  usage_df <-
+    upload_df %>%
+    dplyr::union_all(download_df) %>%
+    dplyr::mutate(usage_value = as.numeric(usage_value)) %>%
+    dplyr::select(-usage_string)
+
+  usage_df %>%
+    dplyr::mutate(usage_mib = dplyr::case_when(
+      usage_unit == "K" ~ usage_value / 1000,
+      usage_unit == "G" ~ usage_value * 1000,
+      usage_unit == "M" ~ usage_value,
+      TRUE ~ NA_real_
+    )) %>%
+    dplyr::select(-usage_unit, -usage_value)
 }
 
 

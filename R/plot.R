@@ -128,7 +128,7 @@ plot_cumulative_network_usage <- function(network_usage_daily_summary) {
   cumulative_usage_by_slot <-
     network_usage_daily_summary %>%
     dplyr::group_by(folding_slot, network_direction, log_date) %>%
-    dplyr::summarise(total_usage_mib = sum(usage_mib)) %>%
+    dplyr::summarise(total_usage_mib = sum(total_usage_mib)) %>%
     dplyr::arrange(folding_slot, network_direction, log_date) %>%
     dplyr::group_by(folding_slot, network_direction) %>%
     dplyr::mutate(cumulative_usage_mib = cumsum(total_usage_mib))
@@ -137,7 +137,7 @@ plot_cumulative_network_usage <- function(network_usage_daily_summary) {
     network_usage_daily_summary %>%
     dplyr::arrange(log_date) %>%
     dplyr::group_by(log_date) %>%
-    dplyr::summarise(total_usage_mib = sum(usage_mib)) %>%
+    dplyr::summarise(total_usage_mib = sum(total_usage_mib)) %>%
     dplyr::mutate(cumulative_usage_mib = cumsum(total_usage_mib))
 
   total_usage_gib = sum(cumulative_usage$total_usage_mib) / 1024
