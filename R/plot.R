@@ -26,7 +26,6 @@ plot_credits <- function(credits_df, all_slots = FALSE) {
                       position = "stack", colour = fah_web_palette[5]) +
 
     ggplot2::theme_minimal() +
-    ggplot2::scale_x_date(date_breaks = "7 day") +
     ggplot2::theme(legend.position = "top",
                    axis.text.x = ggplot2::element_text(angle = 30, hjust = 1),
                    panel.grid.major.x = ggplot2::element_blank(),
@@ -91,7 +90,6 @@ plot_cumulative_network_usage <- function(network_usage_daily_summary) {
     ggplot2::geom_point(colour = fah_web_palette[2], size = ggplot2::rel(2.3)) +
     ggplot2::theme_minimal() +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 30, hjust = 1)) +
-    ggplot2::scale_x_date(date_breaks = "7 day") +
     ggplot2::labs(title = "Total Cumulative Network Usage",
                   subtitle = "Upload + Download",
                   x = "Date", y = "Cumulative Usage (GiB)") +
