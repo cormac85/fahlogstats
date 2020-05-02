@@ -26,7 +26,7 @@ plot_credits <- function(credits_df, all_slots = FALSE) {
                       position = "stack", colour = fah_web_palette[5]) +
 
     ggplot2::theme_minimal() +
-    ggplot2::scale_x_date(date_breaks = "1 day", date_labels = "%a %F") +
+    ggplot2::scale_x_date(date_breaks = "7 day") +
     ggplot2::theme(legend.position = "top",
                    axis.text.x = ggplot2::element_text(angle = 30, hjust = 1),
                    panel.grid.major.x = ggplot2::element_blank(),
@@ -43,71 +43,12 @@ plot_credits <- function(credits_df, all_slots = FALSE) {
   credits_per_slot <- get_credit_summary(credits_df, all_slots = all_slots)
 
   if(all_slots){
-    credits_plot <-
-      credits_plot +
-      ggplot2::geom_label(data = credits_per_slot,
-                          inherit.aes = FALSE,
-                          ggplot2::aes(x = x, y = y - (0.1 * y),
-                                       label = paste(
-                                         "Total Credits: ",
-                                         scales::comma(total_credits_attributed)
-                                       )),
-                          fill = fah_web_palette[2], colour = "white",
-                          fontface = "bold", hjust = 0.1) +
-      ggplot2::geom_label(data = credits_per_slot,
-                          inherit.aes = FALSE,
-                          ggplot2::aes(x = x, y = y - (0.2 * y),
-                                       label = paste(
-                                         "Credits per Work Unit: ",
-                                         scales::comma(credits_per_wu)
-                                       )),
-                          fill = fah_web_palette[2], colour = "white",
-                          fontface = "bold", hjust = 0.1) +
-      ggplot2::geom_label(data = credits_per_slot,
-                          inherit.aes = FALSE,
-                          ggplot2::aes(x = x, y = y - (0.3 * y),
-                                       label = paste(
-                                         "Credits Per Day: ",
-                                         scales::comma(mean_credits_attributed)
-                                       )),
-                          fill = fah_web_palette[2],
-                          colour = "white",
-                          fontface = "bold", hjust = 0.1)
+    credits_plot <- credits_plot
   }
   else if(!all_slots){
     credits_plot <-
       credits_plot +
       ggplot2::facet_wrap(~folding_slot, ncol=1, ) +
-      ggplot2::geom_label(data = credits_per_slot,
-                          inherit.aes = FALSE,
-                          ggplot2::aes(x = x, y = y - (0.05 * y),
-                                       label = paste(
-                                         "Total Credits: ",
-                                         scales::comma(total_credits_attributed)
-                                       ),
-                                       fill = folding_slot),
-                          colour = "white",
-                          fontface = "bold", hjust = 0) +
-      ggplot2::geom_label(data = credits_per_slot,
-                          inherit.aes = FALSE,
-                          ggplot2::aes(x = x, y = y - (0.2 * y),
-                                       label = paste(
-                                         "Credits Per Day: ",
-                                         scales::comma(mean_credits_attributed)
-                                       ),
-                                       fill = folding_slot),
-                          colour = "white",
-                          fontface = "bold", hjust = 0) +
-      ggplot2::geom_label(data = credits_per_slot,
-                          inherit.aes = FALSE,
-                          ggplot2::aes(x = x, y = y - (0.35 * y),
-                                       label = paste(
-                                         "Credits Per Work Unit: ",
-                                         scales::comma(credits_per_wu)
-                                       ),
-                                       fill = folding_slot),
-                          colour = "white",
-                          fontface = "bold", hjust = 0) +
       ggplot2::theme(legend.position = "none")
   }
 
@@ -146,9 +87,11 @@ plot_cumulative_network_usage <- function(network_usage_daily_summary) {
     cumulative_usage %>%
     ggplot2::ggplot(ggplot2::aes(log_date, cumulative_usage_mib / 1024,
                                  label = round(cumulative_usage_mib / 1024, 2))) +
-    ggplot2::geom_line(colour = fah_web_palette[2]) +
-    ggplot2::geom_point(colour = fah_web_palette[2]) +
+    ggplot2::geom_line(colour = fah_web_palette[2], size = ggplot2::rel(1.2)) +
+    ggplot2::geom_point(colour = fah_web_palette[2], size = ggplot2::rel(2.3)) +
     ggplot2::theme_minimal() +
+    ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 30, hjust = 1)) +
+    ggplot2::scale_x_date(date_breaks = "7 day") +
     ggplot2::labs(title = "Total Cumulative Network Usage",
                   subtitle = "Upload + Download",
                   x = "Date", y = "Cumulative Usage (GiB)") +
@@ -159,6 +102,7 @@ plot_cumulative_network_usage <- function(network_usage_daily_summary) {
     ggplot2::ggplot(ggplot2::aes(log_date, cumulative_usage_mib / 1024, fill = network_direction)) +
     ggplot2::geom_col() +
     ggplot2::theme_minimal() +
+    ggplot2::scale_x_date(date_breaks = "7 day") +
     ggplot2::theme(legend.position = "top",
                    axis.text.x = ggplot2::element_blank(),
                    axis.ticks.x = ggplot2::element_blank(),
