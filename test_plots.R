@@ -36,8 +36,8 @@ logs_df %>%
 # live logs
 
 live_logs_df <-
-  read_live_log("~/../AppData/Roaming/FAHClient/") %>%
-  clean_logs()
+  fahlogstats::read_live_log("~/../AppData/Roaming/FAHClient/") %>%
+  fahlogstats::clean_logs()
 
 
 live_logs_df %>%
@@ -53,6 +53,6 @@ live_logs_df %>%
   dplyr::pull(ip_address) %>%
   sample(20) %>%
   purrr::map_df(get_from_ip_api) %>%
-  group_by(org) %>%
+  group_by(isp,org) %>%
   tally() %>%
   arrange(n)

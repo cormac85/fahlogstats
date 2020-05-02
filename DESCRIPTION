@@ -21,6 +21,7 @@ Imports:
     janitor,
     tibble,
     stringr,
-    magrittr
+    magrittr,
+    gridExtra
 RoxygenNote: 7.1.0
 Roxygen: list(markdown = TRUE)
