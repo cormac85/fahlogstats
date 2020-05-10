@@ -20,24 +20,12 @@ logs_df <-
   fahlogstats::read_fah_logs_dir(logs_path) %>%
   clean_logs()
 
-# summary(logs_df)
-
-logs_df %>%
-  get_work_unit_data() %>%
-  get_credits() %>%
-  plot_credits(all_slots = TRUE)
-
-logs_df %>%
-  get_work_unit_data() %>%
-  get_network_usage() %>%
-  calculate_daily_network_usage() %>%
-  plot_cumulative_network_usage()
-
 # live logs
 
 live_logs_df <-
   fahlogstats::read_live_log("~/../AppData/Roaming/FAHClient/") %>%
-  fahlogstats::clean_logs()
+  fahlogstats::clean_logs() %>%
+  dplyr::union_all(logs_df)
 
 
 live_logs_df %>%
@@ -45,6 +33,11 @@ live_logs_df %>%
   get_credits() %>%
   plot_credits(all_slots = TRUE)
 
+live_logs_df %>%
+  get_work_unit_data() %>%
+  get_network_usage() %>%
+  calculate_daily_network_usage() %>%
+  plot_cumulative_network_usage()
 
 # Ip addresses
 live_logs_df %>%

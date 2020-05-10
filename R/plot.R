@@ -25,7 +25,7 @@ plot_credits <- function(credits_df, all_slots = FALSE) {
                                    fill = folding_slot),
                       position = "stack", colour = fah_web_palette[5]) +
 
-    ggplot2::theme_minimal() +
+    ggplot2::theme_minimal(base_size = BASE_PLOT_TEXT_SIZE) +
     ggplot2::theme(legend.position = "top",
                    axis.text.x = ggplot2::element_text(angle = 30, hjust = 1),
                    panel.grid.major.x = ggplot2::element_blank(),
@@ -61,9 +61,14 @@ fah_web_palette <- c("#C74707", "#383838", "#FE6215", "#D06530", "#E7E7E7")
 # FAH Categorical Palette
 fah_categorical_palette <- c("#FF0802", "#04F0FF", "#FDEA05", "#FF02EF", "#0915E8")
 
+# Base text size for all plots
+BASE_PLOT_TEXT_SIZE <- 15
+
 #' Plot Cumulative Network Usage
 #' @export
 plot_cumulative_network_usage <- function(network_usage_daily_summary) {
+
+
 
   cumulative_usage_by_slot <-
     network_usage_daily_summary %>%
@@ -88,7 +93,7 @@ plot_cumulative_network_usage <- function(network_usage_daily_summary) {
                                  label = round(cumulative_usage_mib / 1024, 2))) +
     ggplot2::geom_line(colour = fah_web_palette[2], size = ggplot2::rel(1.2)) +
     ggplot2::geom_point(colour = fah_web_palette[2], size = ggplot2::rel(2.3)) +
-    ggplot2::theme_minimal() +
+    ggplot2::theme_minimal(base_size = BASE_PLOT_TEXT_SIZE) +
     ggplot2::theme(axis.text.x = ggplot2::element_text(angle = 30, hjust = 1)) +
     ggplot2::labs(title = "Total Cumulative Network Usage",
                   subtitle = "Upload + Download",
@@ -99,7 +104,7 @@ plot_cumulative_network_usage <- function(network_usage_daily_summary) {
     cumulative_usage_by_slot %>%
     ggplot2::ggplot(ggplot2::aes(log_date, cumulative_usage_mib / 1024, fill = network_direction)) +
     ggplot2::geom_col() +
-    ggplot2::theme_minimal() +
+    ggplot2::theme_minimal(base_size = BASE_PLOT_TEXT_SIZE) +
     ggplot2::scale_x_date(date_breaks = "7 day") +
     ggplot2::theme(legend.position = "top",
                    axis.text.x = ggplot2::element_blank(),
