@@ -305,3 +305,27 @@ get_connections_data <- function(work_units_df) {
     dplyr::mutate(ip_address = stringr::str_extract(ip_address, "(\\d+).(\\d+).(\\d+).(\\d+)"))
 }
 
+
+#' Get Folding Slot Names
+#'
+#' @export
+get_folding_slot_names <- function(work_units_df) {
+  gpu_slots <-
+    work_units_df  %>%
+    dplyr::filter(stringr::str_detect(`3`, "Requesting"),
+           stringr::str_detect(`4`, "gpu")) %>%
+    dplyr::rename(gpu_name = `6`) %>%
+    tidyr::separate(gpu_name, into=c("gpu_name", "ip_address"), sep = " from ") %>%
+    dplyr::distinct(folding_slot, gpu_name)
+
+  cpu_slots <-
+    work_units_df  %>%
+    dplyr::filter(trimws(`4`) == "CPU") %>%
+    dplyr::rename(cpu_name = `5`) %>%
+    dplyr::distinct(folding_slot, cpu_name) %>%
+    dplyr::mutate(cpu_name = trimws(cpu_name))
+
+  cpu_slots %>%
+    dplyr::left_join(gpu_slots) %>%
+    dplyr::mutate(core_name = ifelse(is.na(gpu_name), cpu_name, gpu_name))
+}

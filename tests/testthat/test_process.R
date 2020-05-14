@@ -127,3 +127,22 @@ test_that("network usage parsing gets correct units", {
     c(1, 0.001, 1000)
   )
 })
+
+test_that("cpu and gpu slot names are retrieved.", {
+  log_file_path <- "./testdata/test_process/"
+  actual_in <- tibble::tibble(log_file_name = "log-20200409-124015.txt")
+
+  work_units <-
+    read_fah_logs(actual_in, log_file_path) %>%
+    clean_logs() %>%
+    get_work_unit_data()
+
+  actual <- get_folding_slot_names(work_units) %>%
+    dplyr::pull(core_name) %>%
+    unique() %>%
+    sort()
+
+  testthat::expect_equal(actual, c("AMD Ryzen 5 2600 Six-Core Processor",
+                                   "Vega 10 XL/XT [Radeon RX Vega 56/64]"))
+
+})
