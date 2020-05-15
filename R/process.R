@@ -329,3 +329,23 @@ get_folding_slot_names <- function(work_units_df) {
     dplyr::left_join(gpu_slots) %>%
     dplyr::mutate(core_name = ifelse(is.na(gpu_name), cpu_name, gpu_name))
 }
+
+
+#' Get Live Folding Slot Progress
+#'
+#' @export
+get_slot_progress <- function(work_units_df) {
+  slot_progress <-  suppressWarnings(
+    work_units_df %>%
+      dplyr::filter(stringr::str_detect(`4`, "Completed")) %>%
+      dplyr::select(-(`5`:`13`)) %>%
+      dplyr::rename("core" = `3`,
+             "completed_status" = `4`) %>%
+      tidyr::separate(col = completed_status, into = c("completed_steps", "completed_percent"), sep = "[\\(\\%\\)]") %>%
+      dplyr::arrange(log_timestamp) %>%
+      dplyr::group_by(folding_slot) %>%
+      dplyr::summarise(slot_progress = as.numeric(dplyr::last(completed_percent)))
+  )
+
+  slot_progress
+}

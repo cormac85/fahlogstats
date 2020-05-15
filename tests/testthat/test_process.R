@@ -128,6 +128,7 @@ test_that("network usage parsing gets correct units", {
   )
 })
 
+
 test_that("cpu and gpu slot names are retrieved.", {
   log_file_path <- "./testdata/test_process/"
   actual_in <- tibble::tibble(log_file_name = "log-20200409-124015.txt")
@@ -146,3 +147,24 @@ test_that("cpu and gpu slot names are retrieved.", {
                                    "Vega 10 XL/XT [Radeon RX Vega 56/64]"))
 
 })
+
+
+test_that("progress is NA for each slot that has no current work", {
+  log_file_path <- "./testdata/test_process/"
+  actual_in <- tibble::tibble(log_file_name = "log-20200409-124015.txt")
+
+  work_units <-
+    read_fah_logs(actual_in, log_file_path) %>%
+    clean_logs() %>%
+    get_work_unit_data()
+
+  slot_progress <-
+    work_units %>%
+    get_slot_progress() %>%
+    dplyr::arrange(slot_progress)
+
+  actual <- slot_progress$slot_progress
+  print(actual)
+  testthat::expect_equal(actual, c(100, 100))
+})
+
