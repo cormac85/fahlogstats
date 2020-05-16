@@ -337,7 +337,8 @@ get_folding_slot_names <- function(logs_df) {
 
   cpu_slots %>%
     dplyr::left_join(gpu_slots, by = "folding_slot") %>%
-    dplyr::mutate(core_name = ifelse(is.na(gpu_name), cpu_name, gpu_name))
+    dplyr::mutate(processor_name = ifelse(is.na(gpu_name), cpu_name, gpu_name),
+                  processor_type = ifelse(is.na(gpu_name), "CPU", "GPU"))
 }
 
 

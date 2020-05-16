@@ -137,13 +137,16 @@ test_that("cpu and gpu slot names are retrieved.", {
     read_fah_logs(actual_in, log_file_path) %>%
     clean_logs()
 
-  actual <- get_folding_slot_names(logs_df) %>%
-    dplyr::pull(core_name) %>%
-    unique() %>%
-    sort()
+  actual <- get_folding_slot_names(logs_df)
 
-  testthat::expect_equal(actual, c("AMD Ryzen 5 2600 Six-Core Processor",
-                                   "Vega 10 XL/XT [Radeon RX Vega 56/64]"))
+
+  testthat::expect_equal(actual$processor_name %>% unique() %>% sort(),
+                         c("AMD Ryzen 5 2600 Six-Core Processor",
+                           "Vega 10 XL/XT [Radeon RX Vega 56/64]"))
+
+  testthat::expect_equal(actual$processor_type %>% unique() %>% sort(),
+                         c("CPU",
+                           "GPU"))
 
 })
 
@@ -180,7 +183,6 @@ test_that("progress is NA when no work has completed or started", {
     dplyr::arrange(slot_progress)
 
   actual <- slot_progress$slot_progress
-  print(actual)
   testthat::expect_equal(actual, c(50, NA))
 })
 
