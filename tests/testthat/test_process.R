@@ -133,12 +133,11 @@ test_that("cpu and gpu slot names are retrieved.", {
   log_file_path <- "./testdata/test_process/"
   actual_in <- tibble::tibble(log_file_name = "log-20200409-124015.txt")
 
-  work_units <-
+  logs_df <-
     read_fah_logs(actual_in, log_file_path) %>%
-    clean_logs() %>%
-    get_work_unit_data()
+    clean_logs()
 
-  actual <- get_folding_slot_names(work_units) %>%
+  actual <- get_folding_slot_names(logs_df) %>%
     dplyr::pull(core_name) %>%
     unique() %>%
     sort()
@@ -149,22 +148,39 @@ test_that("cpu and gpu slot names are retrieved.", {
 })
 
 
-test_that("progress is NA for each slot that has no current work", {
+test_that("progress is 100 for each slot that has no current work", {
   log_file_path <- "./testdata/test_process/"
   actual_in <- tibble::tibble(log_file_name = "log-20200409-124015.txt")
 
-  work_units <-
+  logs_df <-
     read_fah_logs(actual_in, log_file_path) %>%
-    clean_logs() %>%
-    get_work_unit_data()
+    clean_logs()
 
   slot_progress <-
-    work_units %>%
+    logs_df %>%
+    get_slot_progress() %>%
+    dplyr::arrange(slot_progress)
+
+  actual <- slot_progress$slot_progress
+  testthat::expect_equal(actual, c(100, 100))
+})
+
+test_that("progress is NA when no work has completed or started", {
+  log_file_path <- "./testdata/test_process/"
+  actual_in <- tibble::tibble(log_file_name = "log-20200409-124015.txt")
+
+  live_logs_df <-
+    read_fah_logs(actual_in, log_file_path) %>%
+    clean_logs() %>%
+    head(300)
+
+  slot_progress <-
+    live_logs_df %>%
     get_slot_progress() %>%
     dplyr::arrange(slot_progress)
 
   actual <- slot_progress$slot_progress
   print(actual)
-  testthat::expect_equal(actual, c(100, 100))
+  testthat::expect_equal(actual, c(50, NA))
 })
 

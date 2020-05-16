@@ -309,14 +309,24 @@ get_connections_data <- function(work_units_df) {
 #' Get Folding Slot Names
 #'
 #' @export
-get_folding_slot_names <- function(work_units_df) {
+get_folding_slot_names <- function(logs_df) {
+  gpu_names <-
+    logs_df  %>%
+    dplyr::filter(stringr::str_detect(`1`, "GPU \\d")) %>%
+    dplyr::rename(gpu_name = `6`, gpu_number = `1`) %>%
+    dplyr::mutate(gpu_name = stringr::str_sub(gpu_name, start = 3)) %>%
+    dplyr::select(log_file_name, gpu_number, gpu_name, log_date:is_date_rollover) %>%
+    dplyr::distinct(gpu_number, gpu_name) %>%
+    dplyr::mutate(gpu_number = stringr::str_extract(gpu_number, "\\d"))
+
+  work_units_df <- get_work_unit_data(logs_df)
+
   gpu_slots <-
-    work_units_df  %>%
-    dplyr::filter(stringr::str_detect(`3`, "Requesting"),
-           stringr::str_detect(`4`, "gpu")) %>%
-    dplyr::rename(gpu_name = `6`) %>%
-    tidyr::separate(gpu_name, into=c("gpu_name", "ip_address"), sep = " from ") %>%
-    dplyr::distinct(folding_slot, gpu_name)
+    logs_df %>%
+    dplyr::filter(stringr::str_detect(`4`, "READY gpu")) %>%
+    dplyr::rename(gpu_name = `6`, gpu_number = `5`, folding_slot = `2`) %>%
+    dplyr::distinct(folding_slot, gpu_number) %>%
+    dplyr::left_join(gpu_names, by = "gpu_number")
 
   cpu_slots <-
     work_units_df  %>%
@@ -326,7 +336,7 @@ get_folding_slot_names <- function(work_units_df) {
     dplyr::mutate(cpu_name = trimws(cpu_name))
 
   cpu_slots %>%
-    dplyr::left_join(gpu_slots) %>%
+    dplyr::left_join(gpu_slots, by = "folding_slot") %>%
     dplyr::mutate(core_name = ifelse(is.na(gpu_name), cpu_name, gpu_name))
 }
 
@@ -334,9 +344,10 @@ get_folding_slot_names <- function(work_units_df) {
 #' Get Live Folding Slot Progress
 #'
 #' @export
-get_slot_progress <- function(work_units_df) {
+get_slot_progress <- function(logs_df) {
   slot_progress <-  suppressWarnings(
-    work_units_df %>%
+    logs_df %>%
+      get_work_unit_data() %>%
       dplyr::filter(stringr::str_detect(`4`, "Completed")) %>%
       dplyr::select(-(`5`:`13`)) %>%
       dplyr::rename("core" = `3`,
@@ -346,6 +357,13 @@ get_slot_progress <- function(work_units_df) {
       dplyr::group_by(folding_slot) %>%
       dplyr::summarise(slot_progress = as.numeric(dplyr::last(completed_percent)))
   )
+
+  slot_progress <-
+    logs_df %>%
+    get_folding_slot_names() %>%
+    dplyr::left_join(
+      slot_progress, by = "folding_slot"
+    )
 
   slot_progress
 }
