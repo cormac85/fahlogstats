@@ -368,3 +368,10 @@ get_slot_progress <- function(logs_df) {
 
   slot_progress
 }
+
+#' Get Latest Complete Work Unit Details
+#'
+#' @export
+get_latest_work_unit_details <- function(logs_df) {
+  logs_df
+}

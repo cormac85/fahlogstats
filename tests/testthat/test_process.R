@@ -128,7 +128,9 @@ test_that("network usage parsing gets correct units", {
   )
 })
 
-
+#########
+# Slots #
+#########
 test_that("cpu and gpu slot names are retrieved.", {
   log_file_path <- "./testdata/test_process/"
   actual_in <- tibble::tibble(log_file_name = "log-20200409-124015.txt")
@@ -140,16 +142,15 @@ test_that("cpu and gpu slot names are retrieved.", {
   actual <- get_folding_slot_names(logs_df)
 
 
-  testthat::expect_equal(actual$processor_name %>% unique() %>% sort(),
+  testthat::expect_equal(actual$processor_name %>% sort(),
                          c("AMD Ryzen 5 2600 Six-Core Processor",
                            "Vega 10 XL/XT [Radeon RX Vega 56/64]"))
 
-  testthat::expect_equal(actual$processor_type %>% unique() %>% sort(),
+  testthat::expect_equal(actual$processor_type %>% sort(),
                          c("CPU",
                            "GPU"))
 
 })
-
 
 test_that("progress is 100 for each slot that has no current work", {
   log_file_path <- "./testdata/test_process/"
@@ -186,3 +187,22 @@ test_that("progress is NA when no work has completed or started", {
   testthat::expect_equal(actual, c(50, NA))
 })
 
+##############
+# Work Units #
+##############
+
+
+test_that("the latest work unit details are correct", {
+  log_file_path <- "./testdata/test_process/"
+  actual_in <- tibble::tibble(log_file_name = "log-20200409-124015.txt")
+
+  live_logs_df <-
+    read_fah_logs(actual_in, log_file_path) %>%
+    clean_logs()
+
+  actual <-
+    live_logs_df %>%
+    get_latest_work_unit_details()
+
+  testthat::expect_equal(colnames(actual), c("folding_slot", "latest_credits_acquired", "latest_work_unit_duration"))
+})
