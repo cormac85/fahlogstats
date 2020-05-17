@@ -346,6 +346,14 @@ get_folding_slot_names <- function(logs_df) {
 #'
 #' @export
 get_slot_progress <- function(logs_df) {
+
+  current_work_start_time <-
+    logs_df %>%
+    get_work_unit_data() %>%
+    dplyr::filter(stringr::str_detect(`3`, "Started FahCore on PID")) %>%
+    dplyr::group_by(folding_slot) %>%
+    dplyr::summarise(work_start = dplyr::last(log_timestamp))
+
   slot_progress <-  suppressWarnings(
     logs_df %>%
       get_work_unit_data() %>%
@@ -356,7 +364,8 @@ get_slot_progress <- function(logs_df) {
       tidyr::separate(col = completed_status, into = c("completed_steps", "completed_percent"), sep = "[\\(\\%\\)]") %>%
       dplyr::arrange(log_timestamp) %>%
       dplyr::group_by(folding_slot) %>%
-      dplyr::summarise(slot_progress = as.numeric(dplyr::last(completed_percent)))
+      dplyr::summarise(slot_progress = as.numeric(dplyr::last(completed_percent)),
+                       progress_timestamp = dplyr::last(log_timestamp))
   )
 
   slot_progress <-
@@ -364,6 +373,9 @@ get_slot_progress <- function(logs_df) {
     get_folding_slot_names() %>%
     dplyr::left_join(
       slot_progress, by = "folding_slot"
+    ) %>%
+    dplyr::left_join(
+      current_work_start_time, by = "folding_slot"
     )
 
   slot_progress

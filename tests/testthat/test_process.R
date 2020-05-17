@@ -187,6 +187,28 @@ test_that("progress is NA when no work has completed or started", {
   testthat::expect_equal(actual, c(50, NA))
 })
 
+test_that("progress duration is correct", {
+  log_file_path <- "./testdata/test_process_overlapping_wu/"
+  actual_in <- tibble::tibble(log_file_name = "log-20200517-124015.txt")
+
+  live_logs_df <-
+    read_fah_logs(actual_in, log_file_path) %>%
+    clean_logs()
+
+  slot_progress <-
+    live_logs_df %>%
+    get_slot_progress() %>%
+    dplyr::arrange(slot_progress)
+
+  actual <- slot_progress$progress_timestamp - slot_progress$work_start
+  testthat::expect_equal(actual,
+                         c(difftime(time1 = "2020-05-17 09:49:42",
+                                    time2= "2020-05-17 07:29:53"),
+                           difftime(time1 = "2020-05-17 09:48:28",
+                                    time2 = "2020-05-17 07:38:08")),
+                         tolerance = 0.01)
+})
+
 ##############
 # Work Units #
 ##############
