@@ -4,7 +4,7 @@
 \alias{get_slot_progress}
 \title{Get Live Folding Slot Progress}
 \usage{
-get_slot_progress(work_units_df)
+get_slot_progress(logs_df)
 }
 \description{
 Get Live Folding Slot Progress

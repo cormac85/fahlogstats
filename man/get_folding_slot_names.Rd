@@ -4,7 +4,7 @@
 \alias{get_folding_slot_names}
 \title{Get Folding Slot Names}
 \usage{
-get_folding_slot_names(work_units_df)
+get_folding_slot_names(logs_df)
 }
 \description{
 Get Folding Slot Names
