@@ -377,7 +377,7 @@ get_latest_work_unit_details <- function(work_units_df) {
   latest_work_start_time <-
     work_units_df %>%
     dplyr::filter(stringr::str_detect(`3`, "Started FahCore on PID")) %>%
-    dplyr::group_by(folding_slot) %>%
+    dplyr::group_by(folding_slot, work_unit) %>%
     dplyr::summarise(work_start = dplyr::last(log_timestamp))
 
 
@@ -387,7 +387,7 @@ get_latest_work_unit_details <- function(work_units_df) {
     dplyr::rename(credits_attributed = `3`) %>%
     dplyr::select(work_unit, folding_slot, credits_attributed,
                   log_time, log_date, log_timestamp) %>%
-    dplyr::group_by(folding_slot) %>%
+    dplyr::group_by(folding_slot, work_unit) %>%
     dplyr::summarise(
       latest_credits_attributed = dplyr::last(as.numeric(
         stringr::str_extract(credits_attributed, "\\d+")
@@ -395,16 +395,24 @@ get_latest_work_unit_details <- function(work_units_df) {
       work_end = dplyr::last(log_timestamp)
       )
 
-  latest_work_start_time %>%
-    dplyr::left_join(
+  completed_work_unit_details <-
+    latest_work_start_time %>%
+    dplyr::inner_join(
       latest_work_end_time,
-      by = "folding_slot"
+      by = c("folding_slot", "work_unit")
     ) %>%
-    dplyr::mutate(latest_work_duration = work_end - work_start) %>%
+    dplyr::mutate(latest_work_duration = difftime(work_end,work_start,
+                                                  units = "hours")) %>%
+    dplyr::filter(latest_work_duration > 0) %>%
     dplyr::select(folding_slot,
+                  work_unit,
                   work_start,
                   work_end,
                   latest_work_duration,
                   latest_credits_attributed)
+
+  completed_work_unit_details %>%
+    dplyr::group_by(folding_slot) %>%
+    dplyr::filter(work_end == max(work_end))
 
 }

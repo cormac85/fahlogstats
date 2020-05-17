@@ -204,6 +204,7 @@ test_that("the latest work unit columns are correct", {
   actual <- get_latest_work_unit_details(work_units_df)
 
   testthat::expect_equal(colnames(actual), c("folding_slot",
+                                             "work_unit",
                                              "work_start",
                                              "work_end",
                                              "latest_work_duration",
@@ -242,5 +243,25 @@ test_that("the latest work unit credits are correct", {
 
   testthat::expect_equal(actual$latest_credits_attributed,
                          c(4402, 69338))
+
+})
+
+test_that("the latest work unit durations are correct when wu's overlap", {
+  log_file_path <- "./testdata/test_process_overlapping_wu/"
+  actual_in <- tibble::tibble(log_file_name = "log-20200517-124015.txt")
+
+  work_units_df <-
+    read_fah_logs(actual_in, log_file_path) %>%
+    clean_logs() %>%
+    get_work_unit_data()
+
+  actual <- get_latest_work_unit_details(work_units_df)
+
+  testthat::expect_equal(actual$latest_work_duration,
+                         c(difftime(time1 = "2020-05-17 07:29:58",
+                                    time2= "2020-05-17 04:40:56"),
+                           difftime(time1 = "2020-05-17 07:39:22",
+                                    time2 = "2020-05-17 04:31:36")),
+                         tolerance = 0.01)
 
 })
