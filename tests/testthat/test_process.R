@@ -192,17 +192,55 @@ test_that("progress is NA when no work has completed or started", {
 ##############
 
 
-test_that("the latest work unit details are correct", {
+test_that("the latest work unit columns are correct", {
   log_file_path <- "./testdata/test_process/"
   actual_in <- tibble::tibble(log_file_name = "log-20200409-124015.txt")
 
-  live_logs_df <-
+  work_units_df <-
     read_fah_logs(actual_in, log_file_path) %>%
-    clean_logs()
+    clean_logs() %>%
+    get_work_unit_data()
 
-  actual <-
-    live_logs_df %>%
-    get_latest_work_unit_details()
+  actual <- get_latest_work_unit_details(work_units_df)
 
-  testthat::expect_equal(colnames(actual), c("folding_slot", "latest_credits_acquired", "latest_work_unit_duration"))
+  testthat::expect_equal(colnames(actual), c("folding_slot",
+                                             "work_start",
+                                             "work_end",
+                                             "latest_work_duration",
+                                             "latest_credits_attributed"))
+})
+
+test_that("the latest work unit durations are correct", {
+  log_file_path <- "./testdata/test_process/"
+  actual_in <- tibble::tibble(log_file_name = "log-20200409-124015.txt")
+
+  work_units_df <-
+    read_fah_logs(actual_in, log_file_path) %>%
+    clean_logs() %>%
+    get_work_unit_data()
+
+  actual <- get_latest_work_unit_details(work_units_df)
+
+  testthat::expect_equal(actual$latest_work_duration,
+                         c(difftime(time1 = "2020-04-10 14:46:55",
+                                    time2= "2020-04-10 12:59:56"),
+                           difftime(time1 = "2020-04-10 07:18:28",
+                                    time2= "2020-04-10 05:32:20")))
+
+})
+
+test_that("the latest work unit credits are correct", {
+  log_file_path <- "./testdata/test_process/"
+  actual_in <- tibble::tibble(log_file_name = "log-20200409-124015.txt")
+
+  work_units_df <-
+    read_fah_logs(actual_in, log_file_path) %>%
+    clean_logs() %>%
+    get_work_unit_data()
+
+  actual <- get_latest_work_unit_details(work_units_df)
+
+  testthat::expect_equal(actual$latest_credits_attributed,
+                         c(4402, 69338))
+
 })

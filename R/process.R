@@ -372,6 +372,39 @@ get_slot_progress <- function(logs_df) {
 #' Get Latest Complete Work Unit Details
 #'
 #' @export
-get_latest_work_unit_details <- function(logs_df) {
-  logs_df
+get_latest_work_unit_details <- function(work_units_df) {
+
+  latest_work_start_time <-
+    work_units_df %>%
+    dplyr::filter(stringr::str_detect(`3`, "Started FahCore on PID")) %>%
+    dplyr::group_by(folding_slot) %>%
+    dplyr::summarise(work_start = dplyr::last(log_timestamp))
+
+
+  latest_work_end_time <-
+    work_units_df %>%
+    dplyr::filter(stringr::str_detect(`3`, "Final")) %>%
+    dplyr::rename(credits_attributed = `3`) %>%
+    dplyr::select(work_unit, folding_slot, credits_attributed,
+                  log_time, log_date, log_timestamp) %>%
+    dplyr::group_by(folding_slot) %>%
+    dplyr::summarise(
+      latest_credits_attributed = dplyr::last(as.numeric(
+        stringr::str_extract(credits_attributed, "\\d+")
+        )),
+      work_end = dplyr::last(log_timestamp)
+      )
+
+  latest_work_start_time %>%
+    dplyr::left_join(
+      latest_work_end_time,
+      by = "folding_slot"
+    ) %>%
+    dplyr::mutate(latest_work_duration = work_end - work_start) %>%
+    dplyr::select(folding_slot,
+                  work_start,
+                  work_end,
+                  latest_work_duration,
+                  latest_credits_attributed)
+
 }
