@@ -65,7 +65,7 @@ get_processing_time_summary <- function(parsed_log) {
 
   parsed_log %>%
     add_processing_time_cols() %>%
-    dplyr::group_by(folding_slot, work_unit, work_id) %>%
+    dplyr::group_by(folding_slot, work_unit, work_id, log_date) %>%
     dplyr::summarise(
       total_processing_time = sum(step_time_diff, na.rm = TRUE) / 3600
     )
@@ -133,23 +133,15 @@ get_debug_data <- function(parsed_log){
                   folding_slot = `3`)
 }
 
-add_cumulative_sum <- function(log_df, sum_column, date_column, ...) {
-  # adds a cumulative sum column based a given column and group keys
-  log_df %>%
-    dplyr::arrange(folding_slot, ..., {{date_column}}) %>%
-    dplyr::group_by(folding_slot, ...) %>%
-    dplyr::mutate("cumulative_{{ sum_column }}" := cumsum({{ sum_column }}))
-}
-
-#' Get Total Log Duration
+#' Get Daily Duration
 #'
 #' Calculates the total length of time (in hours) that the FAH Client
-#' was active.
+#' was active per day.
 #'
 #' @param parsed_log A tibble of FAH Client logs that are parsed
 #' (`read_fah_logs()`) and cleaned (`clean_logs()`).
 #'
-#' @return A double representing the total hours that logging took place,
+#' @return A dataframe representing the total active log hours per day,
 #' i.e. how long the FAH Client was active, logging and could have been
 #' folding if work was available.
 #'
@@ -159,16 +151,14 @@ add_cumulative_sum <- function(log_df, sum_column, date_column, ...) {
 #'   clean_logs() %>%
 #'   get_total_log_duration() %>%
 #'   paste("Total time client open:", ., "hours")
-get_total_log_duration <- function(parsed_log) {
+get_daily_duration <- function(parsed_log) {
   parsed_log %>%
-    dplyr::group_by(log_file_name) %>%
+    dplyr::group_by(log_file_name, log_date) %>%
     dplyr::summarise(start_log = min(log_timestamp),
                      end_log = max(log_timestamp)) %>%
     dplyr::mutate(log_duration = (end_log - start_log)) %>%
-    dplyr::ungroup() %>%
-    dplyr::summarise(total_log_duration = sum(log_duration)) %>%
-    dplyr::pull(total_log_duration) %>%
-    (function(x) as.integer(x) / 3600)
+    dplyr::group_by(log_date) %>%
+    dplyr::summarise(total_log_duration = sum(log_duration))
 }
 
 

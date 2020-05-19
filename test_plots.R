@@ -51,3 +51,34 @@ live_logs_df %>%
   arrange(n)
 
 
+live_logs_df %>%
+  get_processing_time_summary() %>%
+  dplyr::mutate(week_number = strftime(log_date, format = "%Y-%W")) %>%
+  group_by(folding_slot, week_number) %>%
+  summarise(total_processing_time = sum(total_processing_time)) %>%
+  left_join(
+    live_logs_df %>%
+      get_daily_duration() %>%
+      dplyr::mutate(week_number = strftime(log_date, format = "%Y-%W")) %>%
+      group_by(week_number) %>%
+      summarise(total_log_duration = sum(total_log_duration)),
+    by = "week_number") %>%
+  mutate(utilisation_percent = total_processing_time / (as.numeric(total_log_duration) / 3600),
+         idle_percent = 1 - utilisation_percent) %>%
+  tidyr::pivot_longer(cols = c(utilisation_percent, idle_percent), names_to = "metric", values_to = "value") %>%
+  ggplot2::ggplot(ggplot2::aes(week_number, value, fill = metric, group = metric)) +
+  geom_col() +
+  facet_wrap(~folding_slot, ncol = 1) +
+  scale_y_continuous(labels = scales::percent) +
+  ggplot2::theme_minimal(base_size = BASE_PLOT_TEXT_SIZE) +
+  ggplot2::theme(legend.position = "top",
+                 axis.text.x = ggplot2::element_text(angle = 30, hjust = 1),
+                 panel.grid.major.x = ggplot2::element_blank(),
+                 panel.grid.minor.x = ggplot2::element_blank(),
+                 strip.text = ggplot2::element_text(face = "bold", size = ggplot2::rel(1.2))) +
+  ggplot2::labs(title = paste0("Utilisation per Day"),
+                subtitle = paste0(min(live_logs_df$log_date), " - ",
+                                  max(live_logs_df$log_date)),
+                x = "Week Number", y = "Utilisation vs Idle Time (%)",
+                fill = "Folding Slot") +
+  ggplot2::scale_fill_manual(values = fah_web_palette)
