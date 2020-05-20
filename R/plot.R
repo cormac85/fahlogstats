@@ -76,7 +76,10 @@ plot_cumulative_network_usage <- function(network_usage_daily_summary) {
     dplyr::summarise(total_usage_mib = sum(total_usage_mib)) %>%
     dplyr::arrange(folding_slot, network_direction, log_date) %>%
     dplyr::group_by(folding_slot, network_direction) %>%
-    dplyr::mutate(cumulative_usage_mib = cumsum(total_usage_mib))
+    dplyr::mutate(cumulative_usage_mib = cumsum(total_usage_mib)) %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(folding_slot = paste0("Folding Slot ",
+                                        as.numeric(folding_slot)))
 
   cumulative_usage <-
     network_usage_daily_summary %>%
@@ -84,6 +87,7 @@ plot_cumulative_network_usage <- function(network_usage_daily_summary) {
     dplyr::group_by(log_date) %>%
     dplyr::summarise(total_usage_mib = sum(total_usage_mib)) %>%
     dplyr::mutate(cumulative_usage_mib = cumsum(total_usage_mib))
+
 
   total_usage_gib = sum(cumulative_usage$total_usage_mib) / 1024
 
@@ -102,7 +106,8 @@ plot_cumulative_network_usage <- function(network_usage_daily_summary) {
 
   cumulative_plot_by_slot <-
     cumulative_usage_by_slot %>%
-    ggplot2::ggplot(ggplot2::aes(log_date, cumulative_usage_mib / 1024, fill = network_direction)) +
+    ggplot2::ggplot(ggplot2::aes(log_date, cumulative_usage_mib / 1024,
+                                 fill = network_direction)) +
     ggplot2::geom_col() +
     ggplot2::theme_minimal(base_size = BASE_PLOT_TEXT_SIZE) +
     ggplot2::scale_x_date(date_breaks = "7 day") +
@@ -113,10 +118,72 @@ plot_cumulative_network_usage <- function(network_usage_daily_summary) {
     ggplot2::scale_fill_manual(values = fah_web_palette) +
     ggplot2::facet_wrap(~folding_slot, ncol = 1) +
     ggplot2::labs(title = "Cumulative Network Usage by Folding Slot",
-         x = "Date", y = "Cumulative Usage (GiB)") +
+         x = "Date", y = "Cumulative Usage (GiB)",
+         fill = "Network Direction") +
     ggplot2::ylim(c(0, total_usage_gib))
 
   gridExtra::grid.arrange(cumulative_plot_by_slot,
                           cumulative_plot,
                           heights = c(2, 1))
 }
+
+
+#' Plot Idle Folding Slots
+#' @export
+plot_weekly_idle_slots <- function(logs_df) {
+
+  processing_time_summary <-
+    logs_df %>%
+    get_processing_time_summary() %>%
+    dplyr::mutate(week_number = strftime(log_date, format = "%Y-%W")) %>%
+    dplyr::group_by(folding_slot, week_number) %>%
+    dplyr::summarise(total_processing_time = sum(total_processing_time))
+
+
+  log_duration_summary <-
+    live_logs_df %>%
+    get_daily_duration() %>%
+    dplyr::mutate(week_number = strftime(log_date, format = "%Y-%W")) %>%
+    dplyr::group_by(week_number) %>%
+    dplyr::summarise(total_log_duration = sum(total_log_duration))
+
+  utilisation_summary <-
+    processing_time_summary %>%
+    dplyr::left_join(
+      log_duration_summary,
+      by = "week_number") %>%
+    dplyr::mutate(utilisation_percent = total_processing_time / (as.numeric(total_log_duration) / 3600),
+           idle_percent = 1 - utilisation_percent) %>%
+    tidyr::pivot_longer(cols = c(utilisation_percent, idle_percent),
+                        names_to = "metric",
+                        values_to = "value") %>%
+    dplyr::ungroup() %>%
+    dplyr::mutate(folding_slot = paste0("Folding Slot ", as.numeric(folding_slot)))
+
+
+
+  utilisation_summary %>%
+    ggplot2::ggplot(ggplot2::aes(week_number, value,
+                                 fill = metric,
+                                 group = metric)) +
+    ggplot2::geom_col() +
+    ggplot2::facet_wrap(~folding_slot, ncol = 1) +
+    ggplot2::scale_y_continuous(labels = scales::percent) +
+    ggplot2::theme_minimal(base_size = BASE_PLOT_TEXT_SIZE) +
+    ggplot2::theme(legend.position = "top",
+                   axis.text.x = ggplot2::element_text(angle = 30, hjust = 1),
+                   panel.grid.major.x = ggplot2::element_blank(),
+                   panel.grid.minor.x = ggplot2::element_blank(),
+                   strip.text = ggplot2::element_text(face = "bold",
+                                                      size = ggplot2::rel(1.2))) +
+    ggplot2::labs(title = paste0("Utilisation per Week"),
+                  subtitle = paste0(min(live_logs_df$log_date), " - ",
+                                    max(live_logs_df$log_date)),
+                  x = "Week Number", y = "Utilisation vs Idle Time (%)",
+                  fill = "Folding Slot") +
+    ggplot2::scale_fill_manual(
+      values = fah_web_palette,
+      labels = c("Idle Percent", "Utilisation Percent")
+    )
+}
+

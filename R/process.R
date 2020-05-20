@@ -85,6 +85,7 @@ add_processing_time_cols <- function(parsed_log) {
     dplyr::select(log_file_name, log_timestamp, log_date,
                   log_time, folding_slot, work_unit,
                   core, progress_message) %>%
+    dplyr::mutate(folding_slot = stringr::str_sub(folding_slot, 3)) %>%
     dplyr::arrange(folding_slot, work_unit, log_timestamp)
 
   processing_time_df <-
@@ -118,7 +119,8 @@ get_work_unit_data <- function(parsed_log){
   parsed_log %>%
     dplyr::filter(stringr::str_detect(`2`, "FS\\d+")) %>%
     dplyr::rename(work_unit = `1`,
-                  folding_slot = `2`)
+                  folding_slot = `2`) %>%
+    dplyr::mutate(folding_slot = stringr::str_sub(folding_slot, 3))
 }
 
 #' Get Debug Data
@@ -315,6 +317,7 @@ get_folding_slot_names <- function(logs_df) {
     logs_df %>%
     dplyr::filter(stringr::str_detect(`4`, "READY gpu")) %>%
     dplyr::rename(gpu_name = `6`, gpu_number = `5`, folding_slot = `2`) %>%
+    dplyr::mutate(folding_slot = stringr::str_sub(folding_slot, 3)) %>%
     dplyr::distinct(folding_slot, gpu_number) %>%
     dplyr::left_join(gpu_names, by = "gpu_number")
 

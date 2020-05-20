@@ -50,6 +50,7 @@ live_logs_df %>%
   tally() %>%
   arrange(n)
 
+plot_weekly_idle_slots(live_logs_df)
 
 live_logs_df %>%
   get_processing_time_summary() %>%
@@ -66,9 +67,11 @@ live_logs_df %>%
   mutate(utilisation_percent = total_processing_time / (as.numeric(total_log_duration) / 3600),
          idle_percent = 1 - utilisation_percent) %>%
   tidyr::pivot_longer(cols = c(utilisation_percent, idle_percent), names_to = "metric", values_to = "value") %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(folding_slot = paste0("Folding Slot ", as.numeric(folding_slot))) %>%
   ggplot2::ggplot(ggplot2::aes(week_number, value, fill = metric, group = metric)) +
   geom_col() +
-  facet_wrap(~folding_slot, ncol = 1) +
+  facet_wrap(~folding_slot, ncol = 1, ) +
   scale_y_continuous(labels = scales::percent) +
   ggplot2::theme_minimal(base_size = BASE_PLOT_TEXT_SIZE) +
   ggplot2::theme(legend.position = "top",
@@ -80,5 +83,7 @@ live_logs_df %>%
                 subtitle = paste0(min(live_logs_df$log_date), " - ",
                                   max(live_logs_df$log_date)),
                 x = "Week Number", y = "Utilisation vs Idle Time (%)",
-                fill = "Folding Slot") +
-  ggplot2::scale_fill_manual(values = fah_web_palette)
+                fill = "Idleness", caption = "Folding Slot") +
+  ggplot2::scale_fill_manual(values = fah_web_palette,
+                             labels = c("Idle Percent", "Utilisation Percent"))
+
