@@ -141,7 +141,7 @@ plot_weekly_idle_slots <- function(logs_df) {
 
 
   log_duration_summary <-
-    live_logs_df %>%
+    logs_df %>%
     get_daily_duration() %>%
     dplyr::mutate(week_number = strftime(log_date, format = "%Y-%W")) %>%
     dplyr::group_by(week_number) %>%
