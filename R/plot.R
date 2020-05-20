@@ -177,8 +177,8 @@ plot_weekly_idle_slots <- function(logs_df) {
                    strip.text = ggplot2::element_text(face = "bold",
                                                       size = ggplot2::rel(1.2))) +
     ggplot2::labs(title = paste0("Utilisation per Week"),
-                  subtitle = paste0(min(live_logs_df$log_date), " - ",
-                                    max(live_logs_df$log_date)),
+                  subtitle = paste0(min(logs_df$log_date), " - ",
+                                    max(logs_df$log_date)),
                   x = "Week Number", y = "Utilisation vs Idle Time (%)",
                   fill = "Folding Slot") +
     ggplot2::scale_fill_manual(
