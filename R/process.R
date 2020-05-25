@@ -326,7 +326,8 @@ get_folding_slot_names <- function(logs_df) {
     dplyr::filter(trimws(`4`) == "CPU") %>%
     dplyr::rename(cpu_name = `5`) %>%
     dplyr::distinct(folding_slot, cpu_name) %>%
-    dplyr::mutate(cpu_name = trimws(cpu_name))
+    dplyr::mutate(cpu_name = trimws(cpu_name)) %>%
+    dplyr::filter(! stringr::str_detect(cpu_name, "0x00000000000000000000000000000000"))
 
   cpu_slots %>%
     dplyr::left_join(gpu_slots, by = "folding_slot") %>%

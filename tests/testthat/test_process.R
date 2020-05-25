@@ -130,6 +130,38 @@ test_that("cpu and gpu slot names are retrieved.", {
 
 })
 
+test_that("spurious CPU / cores don't add spurious folding slots", {
+  actual_input <-
+    structure(list(log_file_name = "log.txt", `1` = "WU00", `2` = "FS01",
+                   `3` = "0x21", `4` = "CPU", `5` = " 0x00000000000000000000000000000000",
+                   `6` = NA_character_, `7` = NA_character_, `8` = NA_character_,
+                   `9` = NA_character_, `10` = NA_character_, `11` = NA_character_,
+                   `12` = NA_character_, `13` = NA_character_, log_date = structure(18407, class = "Date"),
+                   log_row_index = 8039L, log_time = "03:04:02", log_timestamp = structure(1590375842, class = c("POSIXct",
+                                                                                                                 "POSIXt"), tzone = "UTC"), lagged_time_diff = structure(0, class = "difftime", units = "secs"),
+                   is_date_rollover = 3L), row.names = c(NA, -1L), class = c("tbl_df",
+                                                                             "tbl", "data.frame")) %>%
+    dplyr::union_all(
+      structure(list(log_file_name = "log.txt", `1` = "WU00", `2` = "FS00",
+                     `3` = "0xa7", `4` = "        CPU", `5` = " AMD Ryzen 5 2600 Six-Core Processor",
+                     `6` = NA_character_, `7` = NA_character_, `8` = NA_character_,
+                     `9` = NA_character_, `10` = NA_character_, `11` = NA_character_,
+                     `12` = NA_character_, `13` = NA_character_, log_date = structure(18404, class = "Date"),
+                     log_row_index = 233L, log_time = "18:03:28", log_timestamp = structure(1590170608, tzone = "UTC", class = c("POSIXct",
+                                                                                                                                 "POSIXt")), lagged_time_diff = structure(0, class = "difftime", units = "secs"),
+                     is_date_rollover = 0L), row.names = c(NA, -1L), class = c("tbl_df",
+                                                                               "tbl", "data.frame"))
+    )
+
+  actual <- get_folding_slot_names(actual_input)
+
+  testthat::expect_equal(nrow(actual), 1)
+  testthat::expect_equal(actual$processor_name,
+                         "AMD Ryzen 5 2600 Six-Core Processor")
+
+})
+
+
 test_that("progress is 100 for each slot that has no current work", {
   log_file_path <- "./testdata/test_process/"
   actual_in <- tibble::tibble(log_file_name = "log-20200409-124015.txt")
