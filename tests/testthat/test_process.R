@@ -162,6 +162,26 @@ test_that("spurious CPU / cores don't add spurious folding slots", {
 })
 
 
+test_that("at the start of logs that the GPU slot name is not replaced by the CPU slot name", {
+  log_file_path <- "./testdata/test_duplicate_slots/"
+  actual_in <- tibble::tibble(log_file_name = "log_duplicate_slots-20200409-124015.txt")
+
+
+  actual <-
+    read_fah_logs(actual_in, log_file_path) %>%
+    clean_logs() %>%
+    get_folding_slot_names()
+
+  testthat::expect_equal(nrow(actual), 2)
+  testthat::expect_equal(
+    actual$processor_name,
+    c("AMD Ryzen 5 2600 Six-Core Processor",
+      "Vega 10 XL/XT [Radeon RX Vega 56/64]")
+  )
+
+})
+
+
 test_that("progress is 100 for each slot that has no current work", {
   log_file_path <- "./testdata/test_process/"
   actual_in <- tibble::tibble(log_file_name = "log-20200409-124015.txt")

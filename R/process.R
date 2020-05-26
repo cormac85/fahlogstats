@@ -315,9 +315,9 @@ get_folding_slot_names <- function(logs_df) {
 
   gpu_slots <-
     logs_df %>%
-    dplyr::filter(stringr::str_detect(`4`, "READY gpu")) %>%
-    dplyr::rename(gpu_name = `6`, gpu_number = `5`, folding_slot = `2`) %>%
-    dplyr::mutate(folding_slot = stringr::str_sub(folding_slot, 3)) %>%
+    dplyr::filter(stringr::str_detect(`2`, "READY gpu")) %>%
+    dplyr::rename(gpu_name = `2`, gpu_number = `3`, folding_slot = `1`) %>%
+    dplyr::mutate(folding_slot = stringr::str_extract(folding_slot, "\\d+")) %>%
     dplyr::distinct(folding_slot, gpu_number) %>%
     dplyr::left_join(gpu_names, by = "gpu_number")
 
