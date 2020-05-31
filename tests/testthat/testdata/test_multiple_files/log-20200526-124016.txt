@@ -1,0 +1,323 @@
+*********************** Log Started 2020-05-26T12:21:26Z ***********************
+12:21:26:************************* Folding@home Client *************************
+12:21:26:        Website: https://foldingathome.org/
+12:21:26:      Copyright: (c) 2009-2018 foldingathome.org
+12:21:26:         Author: Joseph Coffland <joseph@cauldrondevelopment.com>
+12:21:26:           Args:
+12:21:26:         Config: C:\Users\Nasum\AppData\Roaming\FAHClient\config.xml
+12:21:26:******************************** Build ********************************
+12:21:26:        Version: 7.5.1
+12:21:26:           Date: May 11 2018
+12:21:26:           Time: 13:06:32
+12:21:26:     Repository: Git
+12:21:26:       Revision: 4705bf53c635f88b8fe85af7675557e15d491ff0
+12:21:26:         Branch: master
+12:21:26:       Compiler: Visual C++ 2008
+12:21:26:        Options: /TP /nologo /EHa /wd4297 /wd4103 /Ox /MT
+12:21:26:       Platform: win32 10
+12:21:26:           Bits: 32
+12:21:26:           Mode: Release
+12:21:26:******************************* System ********************************
+12:21:26:            CPU: AMD Ryzen 5 2600 Six-Core Processor
+12:21:26:         CPU ID: AuthenticAMD Family 23 Model 8 Stepping 2
+12:21:26:           CPUs: 12
+12:21:26:         Memory: 15.92GiB
+12:21:26:    Free Memory: 12.28GiB
+12:21:26:        Threads: WINDOWS_THREADS
+12:21:26:     OS Version: 6.2
+12:21:26:    Has Battery: false
+12:21:26:     On Battery: false
+12:21:26:     UTC Offset: 1
+12:21:26:            PID: 27996
+12:21:26:            CWD: C:\Users\Nasum\AppData\Roaming\FAHClient
+12:21:26:             OS: Windows 10 Enterprise
+12:21:26:        OS Arch: AMD64
+12:21:26:           GPUs: 1
+12:21:26:          GPU 0: Bus:11 Slot:0 Func:0 AMD:5 Vega 10 XL/XT [Radeon RX Vega 56/64]
+12:21:26:           CUDA: Not detected: Failed to open dynamic library 'nvcuda.dll': The
+12:21:26:                 specified module could not be found.
+12:21:26:
+12:21:26:OpenCL Device 0: Platform:0 Device:0 Bus:11 Slot:0 Compute:1.2 Driver:3004.8
+12:21:26:  Win32 Service: false
+12:21:26:***********************************************************************
+12:21:26:<config>
+12:21:26:  <service-description v='Folding@home Client'/>
+12:21:26:  <service-restart v='true'/>
+12:21:26:  <service-restart-delay v='5000'/>
+12:21:26:
+12:21:26:  <!-- Client Control -->
+12:21:26:  <client-threads v='6'/>
+12:21:26:  <cycle-rate v='4'/>
+12:21:26:  <cycles v='-1'/>
+12:21:26:  <data-directory v='.'/>
+12:21:26:  <disable-sleep-when-active v='true'/>
+12:21:26:  <exec-directory v='C:\Program Files (x86)\FAHClient'/>
+12:21:26:  <exit-when-done v='false'/>
+12:21:26:  <fold-anon v='false'/>
+12:21:26:  <open-web-control v='false'/>
+12:21:26:
+12:21:26:  <!-- Configuration -->
+12:21:26:  <config-rotate v='true'/>
+12:21:26:  <config-rotate-dir v='configs'/>
+12:21:26:  <config-rotate-max v='16'/>
+12:21:26:
+12:21:26:  <!-- Debugging -->
+12:21:26:  <assignment-servers>
+12:21:26:    assign1.foldingathome.org:8080 assign2.foldingathome.org:80
+12:21:26:  </assignment-servers>
+12:21:26:  <auth-as v='true'/>
+12:21:26:  <capture-directory v='capture'/>
+12:21:26:  <capture-on-error v='false'/>
+12:21:26:  <capture-packets v='false'/>
+12:21:26:  <capture-requests v='false'/>
+12:21:26:  <capture-responses v='false'/>
+12:21:26:  <capture-sockets v='false'/>
+12:21:26:  <core-exec v='FahCore_$type'/>
+12:21:26:  <core-wrapper-exec v='FAHCoreWrapper'/>
+12:21:26:  <debug-sockets v='false'/>
+12:21:26:  <exception-locations v='true'/>
+12:21:26:  <stack-traces v='false'/>
+12:21:26:
+12:21:26:  <!-- Error Handling -->
+12:21:26:  <max-slot-errors v='10'/>
+12:21:26:  <max-unit-errors v='5'/>
+12:21:26:
+12:21:26:  <!-- Folding Core -->
+12:21:26:  <checkpoint v='15'/>
+12:21:26:  <core-dir v='cores'/>
+12:21:26:  <core-priority v='idle'/>
+12:21:26:  <cpu-affinity v='false'/>
+12:21:26:  <cpu-usage v='100'/>
+12:21:26:  <gpu-usage v='100'/>
+12:21:26:  <no-assembly v='false'/>
+12:21:26:
+12:21:26:  <!-- Folding Slot Configuration -->
+12:21:26:  <cause v='ANY'/>
+12:21:26:  <client-subtype v='STDCLI'/>
+12:21:26:  <client-type v='normal'/>
+12:21:26:  <cpu-species v='X86_AMD'/>
+12:21:26:  <cpu-type v='AMD64'/>
+12:21:26:  <cpus v='-1'/>
+12:21:26:  <disable-viz v='false'/>
+12:21:26:  <gpu v='true'/>
+12:21:26:  <max-packet-size v='normal'/>
+12:21:26:  <os-species v='WIN_8'/>
+12:21:26:  <os-type v='WIN32'/>
+12:21:26:  <project-key v='0'/>
+12:21:26:  <smp v='true'/>
+12:21:26:
+12:21:26:  <!-- GUI -->
+12:21:26:  <gui-enabled v='true'/>
+12:21:26:
+12:21:26:  <!-- HTTP Server -->
+12:21:26:  <allow v='127.0.0.1'/>
+12:21:26:  <connection-timeout v='60'/>
+12:21:26:  <deny v='0/0'/>
+12:21:26:  <http-addresses v='0:7396'/>
+12:21:26:  <https-addresses v=''/>
+12:21:26:  <max-connect-time v='900'/>
+12:21:26:  <max-connections v='800'/>
+12:21:26:  <max-request-length v='52428800'/>
+12:21:26:  <min-connect-time v='300'/>
+12:21:26:
+12:21:26:  <!-- Logging -->
+12:21:26:  <log v='log.txt'/>
+12:21:26:  <log-color v='false'/>
+12:21:26:  <log-crlf v='true'/>
+12:21:26:  <log-date v='false'/>
+12:21:26:  <log-date-periodically v='21600'/>
+12:21:26:  <log-domain v='false'/>
+12:21:26:  <log-header v='true'/>
+12:21:26:  <log-level v='true'/>
+12:21:26:  <log-no-info-header v='true'/>
+12:21:26:  <log-redirect v='false'/>
+12:21:26:  <log-rotate v='true'/>
+12:21:26:  <log-rotate-dir v='logs'/>
+12:21:26:  <log-rotate-max v='16'/>
+12:21:26:  <log-short-level v='false'/>
+12:21:26:  <log-simple-domains v='true'/>
+12:21:26:  <log-thread-id v='false'/>
+12:21:26:  <log-thread-prefix v='true'/>
+12:21:26:  <log-time v='true'/>
+12:21:26:  <log-to-screen v='true'/>
+12:21:26:  <log-truncate v='false'/>
+12:21:26:  <verbosity v='4'/>
+12:21:26:
+12:21:26:  <!-- Network -->
+12:21:26:  <proxy v=':8080'/>
+12:21:26:  <proxy-enable v='false'/>
+12:21:26:  <proxy-pass v=''/>
+12:21:26:  <proxy-user v=''/>
+12:21:26:
+12:21:26:  <!-- Process Control -->
+12:21:26:  <child v='false'/>
+12:21:26:  <daemon v='false'/>
+12:21:26:  <pid v='false'/>
+12:21:26:  <pid-file v='Folding@home Client.pid'/>
+12:21:26:  <respawn v='false'/>
+12:21:26:  <service v='false'/>
+12:21:26:
+12:21:26:  <!-- Remote Command Server -->
+12:21:26:  <command-address v='0.0.0.0'/>
+12:21:26:  <command-allow-no-pass v='127.0.0.1'/>
+12:21:26:  <command-deny-no-pass v='0/0'/>
+12:21:26:  <command-enable v='true'/>
+12:21:26:  <command-port v='36330'/>
+12:21:26:
+12:21:26:  <!-- Slot Control -->
+12:21:26:  <idle v='false'/>
+12:21:26:  <max-shutdown-wait v='60'/>
+12:21:26:  <pause-on-battery v='true'/>
+12:21:26:  <pause-on-start v='false'/>
+12:21:26:  <paused v='false'/>
+12:21:26:  <power v='medium'/>
+12:21:26:
+12:21:26:  <!-- User Information -->
+12:21:26:  <machine-id v='0'/>
+12:21:26:  <passkey v='********************************'/>
+12:21:26:  <team v='60443'/>
+12:21:26:  <user v='Nasum'/>
+12:21:26:
+12:21:26:  <!-- Web Server -->
+12:21:26:  <web-allow v='127.0.0.1'/>
+12:21:26:  <web-deny v='0/0'/>
+12:21:26:  <web-enable v='true'/>
+12:21:26:
+12:21:26:  <!-- Web Server Sessions -->
+12:21:26:  <session-cookie v='sid'/>
+12:21:26:  <session-lifetime v='86400'/>
+12:21:26:  <session-timeout v='3600'/>
+12:21:26:
+12:21:26:  <!-- Work Unit Control -->
+12:21:26:  <dump-after-deadline v='true'/>
+12:21:26:  <max-queue v='16'/>
+12:21:26:  <max-units v='0'/>
+12:21:26:  <next-unit-percentage v='99'/>
+12:21:26:  <stall-detection-enabled v='false'/>
+12:21:26:  <stall-percent v='5'/>
+12:21:26:  <stall-timeout v='1800'/>
+12:21:26:
+12:21:26:  <!-- Folding Slots -->
+12:21:26:  <slot id='0' type='CPU'/>
+12:21:26:  <slot id='1' type='GPU'/>
+12:21:26:</config>
+12:21:26:Trying to access database...
+12:21:26:Successfully acquired database lock
+12:21:26:Enabled folding slot 00: READY cpu:10
+12:21:26:Enabled folding slot 01: READY gpu:0:Vega 10 XL/XT [Radeon RX Vega 56/64]
+12:21:26:WU00:FS01:Starting
+12:21:26:WU00:FS01:Running FahCore: "C:\Program Files (x86)\FAHClient/FAHCoreWrapper.exe" C:\Users\Nasum\AppData\Roaming\FAHClient\cores/cores.foldingathome.org/v7/win/64bit/Core_22.fah/FahCore_22.exe -dir 00 -suffix 01 -version 705 -lifeline 27996 -checkpoint 15 -gpu-vendor amd -opencl-platform 0 -opencl-device 0 -gpu 0
+12:21:26:WU00:FS01:Started FahCore on PID 22884
+12:21:26:WU00:FS01:Core PID:13332
+12:21:26:WU00:FS01:FahCore 0x22 started
+12:21:27:WU01:FS00:Starting
+12:21:27:WU01:FS00:Running FahCore: "C:\Program Files (x86)\FAHClient/FAHCoreWrapper.exe" C:\Users\Nasum\AppData\Roaming\FAHClient\cores/cores.foldingathome.org/v7/win/64bit/avx/Core_a7.fah/FahCore_a7.exe -dir 01 -suffix 01 -version 705 -lifeline 27996 -checkpoint 15 -np 10
+12:21:27:WU01:FS00:Started FahCore on PID 24008
+12:21:27:WU01:FS00:Core PID:26664
+12:21:27:WU01:FS00:FahCore 0xa7 started
+12:21:27:WU01:FS00:0xa7:*********************** Log Started 2020-05-26T12:21:27Z ***********************
+12:21:27:WU01:FS00:0xa7:************************** Gromacs Folding@home Core ***************************
+12:21:27:WU01:FS00:0xa7:       Type: 0xa7
+12:21:27:WU01:FS00:0xa7:       Core: Gromacs
+12:21:27:WU01:FS00:0xa7:       Args: -dir 01 -suffix 01 -version 705 -lifeline 24008 -checkpoint 15 -np
+12:21:27:WU01:FS00:0xa7:             10
+12:21:27:WU01:FS00:0xa7:************************************ CBang *************************************
+12:21:27:WU01:FS00:0xa7:       Date: Oct 26 2019
+12:21:27:WU01:FS00:0xa7:       Time: 01:38:25
+12:21:27:WU01:FS00:0xa7:   Revision: c46a1a011a24143739ac7218c5a435f66777f62f
+12:21:27:WU01:FS00:0xa7:     Branch: master
+12:21:27:WU01:FS00:0xa7:   Compiler: Visual C++ 2008
+12:21:27:WU01:FS00:0xa7:    Options: /TP /nologo /EHa /wd4297 /wd4103 /Ox /MT
+12:21:27:WU01:FS00:0xa7:   Platform: win32 10
+12:21:27:WU01:FS00:0xa7:       Bits: 64
+12:21:27:WU01:FS00:0xa7:       Mode: Release
+12:21:27:WU01:FS00:0xa7:************************************ System ************************************
+12:21:27:WU01:FS00:0xa7:        CPU: AMD Ryzen 5 2600 Six-Core Processor
+12:21:27:WU01:FS00:0xa7:     CPU ID: AuthenticAMD Family 23 Model 8 Stepping 2
+12:21:27:WU01:FS00:0xa7:       CPUs: 12
+12:21:27:WU01:FS00:0xa7:     Memory: 15.92GiB
+12:21:27:WU01:FS00:0xa7:Free Memory: 11.93GiB
+12:21:27:WU01:FS00:0xa7:    Threads: WINDOWS_THREADS
+12:21:27:WU01:FS00:0xa7: OS Version: 6.2
+12:21:27:WU01:FS00:0xa7:Has Battery: false
+12:21:27:WU01:FS00:0xa7: On Battery: false
+12:21:27:WU01:FS00:0xa7: UTC Offset: 1
+12:21:27:WU01:FS00:0xa7:        PID: 26664
+12:21:27:WU01:FS00:0xa7:        CWD: C:\Users\Nasum\AppData\Roaming\FAHClient\work
+12:21:27:WU01:FS00:0xa7:******************************** Build - libFAH ********************************
+12:21:27:WU01:FS00:0xa7:    Version: 0.0.18
+12:21:27:WU01:FS00:0xa7:     Author: Joseph Coffland <joseph@cauldrondevelopment.com>
+12:21:27:WU01:FS00:0xa7:  Copyright: 2019 foldingathome.org
+12:21:27:WU01:FS00:0xa7:   Homepage: https://foldingathome.org/
+12:21:27:WU01:FS00:0xa7:       Date: Oct 26 2019
+12:21:27:WU01:FS00:0xa7:       Time: 01:52:30
+12:21:27:WU01:FS00:0xa7:   Revision: c1e3513b1bc0c16013668f2173ee969e5995b38e
+12:21:27:WU01:FS00:0xa7:     Branch: master
+12:21:27:WU01:FS00:0xa7:   Compiler: Visual C++ 2008
+12:21:27:WU01:FS00:0xa7:    Options: /TP /nologo /EHa /wd4297 /wd4103 /Ox /MT
+12:21:27:WU01:FS00:0xa7:   Platform: win32 10
+12:21:27:WU01:FS00:0xa7:       Bits: 64
+12:21:27:WU01:FS00:0xa7:       Mode: Release
+12:21:27:WU01:FS00:0xa7:************************************ Build *************************************
+12:21:27:WU01:FS00:0xa7:       SIMD: avx_256
+12:21:27:WU01:FS00:0xa7:********************************************************************************
+12:21:27:WU01:FS00:0xa7:Project: 16429 (Run 0, Clone 1923, Gen 98)
+12:21:27:WU01:FS00:0xa7:Unit: 0x0000007a96880e6e5e924c57795c32db
+12:21:27:WU01:FS00:0xa7:Digital signatures verified
+12:21:27:WU01:FS00:0xa7:Calling: mdrun -s frame98.tpr -o frame98.trr -x frame98.xtc -cpi state.cpt -cpt 15 -nt 10
+12:21:27:WU01:FS00:0xa7:Steps: first=49000000 total=500000
+12:21:28:WU00:FS01:0x22:*********************** Log Started 2020-05-26T12:21:27Z ***********************
+12:21:28:WU00:FS01:0x22:*************************** Core22 Folding@home Core ***************************
+12:21:28:WU00:FS01:0x22:       Type: 0x22
+12:21:28:WU00:FS01:0x22:       Core: Core22
+12:21:28:WU00:FS01:0x22:    Website: https://foldingathome.org/
+12:21:28:WU00:FS01:0x22:  Copyright: (c) 2009-2018 foldingathome.org
+12:21:28:WU00:FS01:0x22:     Author: John Chodera <john.chodera@choderalab.org> and Rafal Wiewiora
+12:21:28:WU00:FS01:0x22:             <rafal.wiewiora@choderalab.org>
+12:21:28:WU00:FS01:0x22:       Args: -dir 00 -suffix 01 -version 705 -lifeline 22884 -checkpoint 15
+12:21:28:WU00:FS01:0x22:             -gpu-vendor amd -opencl-platform 0 -opencl-device 0 -gpu 0
+12:21:28:WU00:FS01:0x22:     Config: <none>
+12:21:28:WU00:FS01:0x22:************************************ Build *************************************
+12:21:28:WU00:FS01:0x22:    Version: 0.0.5
+12:21:28:WU00:FS01:0x22:       Date: Apr 22 2020
+12:21:28:WU00:FS01:0x22:       Time: 04:42:59
+12:21:28:WU00:FS01:0x22: Repository: Git
+12:21:28:WU00:FS01:0x22:   Revision: 2d69202c898bd9bb3e093f51cd32bf411c2a0388
+12:21:28:WU00:FS01:0x22:     Branch: HEAD
+12:21:28:WU00:FS01:0x22:   Compiler: Visual C++ 2008
+12:21:28:WU00:FS01:0x22:    Options: /TP /nologo /EHa /wd4297 /wd4103 /Ox /MT
+12:21:28:WU00:FS01:0x22:   Platform: win32 10
+12:21:28:WU00:FS01:0x22:       Bits: 64
+12:21:28:WU00:FS01:0x22:       Mode: Release
+12:21:28:WU00:FS01:0x22:************************************ System ************************************
+12:21:28:WU00:FS01:0x22:        CPU: AMD Ryzen 5 2600 Six-Core Processor
+12:21:28:WU00:FS01:0x22:     CPU ID: AuthenticAMD Family 23 Model 8 Stepping 2
+12:21:28:WU00:FS01:0x22:       CPUs: 12
+12:21:28:WU00:FS01:0x22:     Memory: 15.92GiB
+12:21:28:WU00:FS01:0x22:Free Memory: 12.01GiB
+12:21:28:WU00:FS01:0x22:    Threads: WINDOWS_THREADS
+12:21:28:WU00:FS01:0x22: OS Version: 6.2
+12:21:28:WU00:FS01:0x22:Has Battery: false
+12:21:28:WU00:FS01:0x22: On Battery: false
+12:21:28:WU00:FS01:0x22: UTC Offset: 1
+12:21:28:WU00:FS01:0x22:        PID: 13332
+12:21:28:WU00:FS01:0x22:        CWD: C:\Users\Nasum\AppData\Roaming\FAHClient\work
+12:21:28:WU00:FS01:0x22:         OS: Windows 10 Pro
+12:21:28:WU00:FS01:0x22:    OS Arch: AMD64
+12:21:28:WU00:FS01:0x22:********************************************************************************
+12:21:28:WU00:FS01:0x22:Project: 11743 (Run 0, Clone 2158, Gen 129)
+12:21:28:WU00:FS01:0x22:Unit: 0x000000b68ca304f15e67e3d9f8991fb3
+12:21:28:WU00:FS01:0x22:Digital signatures verified
+12:21:28:WU00:FS01:0x22:Folding@home GPU Core22 Folding@home Core
+12:21:28:WU00:FS01:0x22:Version 0.0.5
+12:21:28:WU00:FS01:0x22:  Found a checkpoint file
+12:21:30:WU01:FS00:0xa7:Completed 31231 out of 500000 steps (6%)
+12:22:00:WU00:FS01:0x22:Completed 250000 out of 2000000 steps (12%)
+12:22:00:WU00:FS01:0x22:Temperature control disabled. Requirements: single Nvidia GPU, tmax must be < 110 and twait >= 900
+12:22:41:WU00:FS01:0x22:Completed 260000 out of 2000000 steps (13%)
+12:23:34:WU01:FS00:0xa7:Completed 35000 out of 500000 steps (7%)
+12:23:57:WU00:FS01:0x22:Completed 280000 out of 2000000 steps (14%)
+12:25:09:WU00:FS01:0x22:Completed 300000 out of 2000000 steps (15%)
+12:25:57:WU01:FS00:0xa7:Completed 40000 out of 500000 steps (8%)
+12:26:29:WU00:FS01:0x22:Completed 320000 out of 2000000 steps (16%)
+12:27:42:WU00:FS01:0x22:Completed 340000 out of 2000000 steps (17%)

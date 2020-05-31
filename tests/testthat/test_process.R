@@ -317,3 +317,19 @@ test_that("the latest work unit durations are correct when wu's overlap", {
                          tolerance = 0.01)
 
 })
+
+#################
+# Log Durations #
+#################
+
+test_that("daily log durations completes the time series with 0 seconds", {
+  log_file_path <- "./testdata/test_multiple_files/"
+  actual_in <- tibble::tibble(log_file_name = c("log-20200409-124015.txt",
+                                                "log-20200526-124016.txt"))
+
+  logs_df <-
+    read_fah_logs(actual_in, log_file_path) %>%
+    clean_logs()
+  actual = get_daily_duration(logs_df)
+  testthat::expect_length(unique(actual$log_date), 48)
+})

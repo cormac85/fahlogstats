@@ -61,7 +61,7 @@ total_duration <-
 
 idle_summary <-
   live_logs_df %>%
-  get_processing_time_summary()%>%
+  get_processing_time_summary() %>%
   group_by(folding_slot) %>%
   summarise(total_active_hours = sum(total_processing_time)) %>%
   mutate(total_log_hours = total_duration$total_hours,

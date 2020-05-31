@@ -154,14 +154,28 @@ get_debug_data <- function(parsed_log){
 #'   get_total_log_duration() %>%
 #'   paste("Total time client open:", ., "hours")
 get_daily_duration <- function(parsed_log) {
-  parsed_log %>%
+  daily_duration <-
+    parsed_log %>%
     dplyr::group_by(log_file_name, log_date) %>%
     dplyr::summarise(start_log = min(log_timestamp),
                      end_log = max(log_timestamp)) %>%
     dplyr::mutate(log_duration = (end_log - start_log)) %>%
     dplyr::group_by(log_date) %>%
     dplyr::summarise(total_log_duration = sum(log_duration))
+
+  daily_duration %>%
+    dplyr::ungroup() %>%
+    tidyr::complete(total_log_duration,
+                    log_date = seq.Date(min(log_date), max(log_date), by = "day"),
+                    fill = list(total_log_duration = 0))
 }
+
+# daily_network_usage %>%
+#   dplyr::ungroup() %>%
+#   tidyr::complete(folding_slot,
+#                   network_direction,
+#                   log_date = seq.Date(min(log_date), max(log_date), by = "day"),
+#                   fill = list(total_usage_mib = 0))
 
 
 #' Get Credits
